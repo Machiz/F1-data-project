@@ -249,7 +249,15 @@ def build_master(cleaned: dict) -> pd.DataFrame:
     # ── Base: vueltas ──────────────────────────────────────
     laps = _concat_drivers(cleaned["driver"]["laps"])
     if laps.empty:
-        raise ValueError("No hay datos de laps.")
+        if laps.empty:
+            # Mensaje de error más específico: qué drivers y cuántas filas tiene cada uno
+            laps_dict = cleaned["driver"].get("laps", {})
+            counts = {k: int(v.shape[0]) for k, v in laps_dict.items()}
+            drivers = list(counts.keys())
+            raise ValueError(
+                f"No hay datos de 'laps'. Drivers encontrados en 'laps': {drivers}; "
+                f"filas por driver: {counts}; tipos de tablas de driver disponibles: {list(cleaned['driver'].keys())}"
+            )
 
     master = laps.sort_values(["driver_number", "lap_number"]).reset_index(drop=True)
 
