@@ -106,27 +106,54 @@ def _iqr_filter(df: pd.DataFrame, col: str, factor: float = 3.0) -> pd.DataFrame
 def clean_laps(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
 
+    # Renombrar columnas a estándar
+    rename_dict = {
+        "LapTime": "lap_duration",
+        "Sector1Time": "duration_sector_1",
+        "Sector2Time": "duration_sector_2",
+        "Sector3Time": "duration_sector_3",
+        "PitInTime": "pit_in_time",
+        "PitOutTime": "pit_out_time",
+        "LapNumber": "lap_number",
+        "Position": "position",
+        "DateStart": "date_start",
+        "I1Speed": "i1_speed",
+        "I2Speed": "i2_speed",
+        "IsPitOutLap": "is_pit_out_lap",
+        "StSpeed": "st_speed"
+    }
+    df = df.rename(columns={k: v for k, v in rename_dict.items() if k in df.columns})
+
     # Tiempos → segundos
-    for col in ["LapTime", "Sector1Time", "Sector2Time", "Sector3Time",
-                "PitInTime", "PitOutTime"]:
+    for col in ["lap_duration", "duration_sector_1", "duration_sector_2", "duration_sector_3", "pit_in_time", "pit_out_time"]:
         if col in df.columns:
             df[col] = _parse_laptime(df[col])
 
     # Tipos básicos
-    for col in ["lap_number", "Position", "driver_number"]:
+    for col in ["lap_number", "position", "driver_number"]:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors="coerce").astype("Int64")
 
     # Eliminar vueltas sin tiempo registrado
-    if "LapTime" in df.columns:
-        df = df.dropna(subset=["LapTime"])
-        df = _iqr_filter(df, "LapTime", factor=3.0)
+    if "lap_duration" in df.columns:
+        df = df.dropna(subset=["lap_duration"])
 
     return df.reset_index(drop=True)
 
 
 def clean_car_data(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
+    # Renombrar columnas a estándar
+    rename_dict = {
+        "RPM": "rpm",
+        "Speed": "speed",
+        "nGear": "n_gear",
+        "Throttle": "throttle",
+        "Brake": "brake",
+        "DRS": "drs",
+        "Date": "date"
+    }
+    df = df.rename(columns={k: v for k, v in rename_dict.items() if k in df.columns})
 
     # Timestamp
     if "date" in df.columns:
@@ -147,19 +174,36 @@ def clean_car_data(df: pd.DataFrame) -> pd.DataFrame:
 
 def clean_stints(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
+    # Renombrar columnas a estándar
+    rename_dict = {
+        "Stint": "stint_number",
+        "LapStart": "lap_start",
+        "LapEnd": "lap_end",
+        "TyreLife": "tyre_age_at_start",
+        "Compound": "compound"
+    }
+    df = df.rename(columns={k: v for k, v in rename_dict.items() if k in df.columns})
 
-    for col in ["Stint", "LapStart", "LapEnd", "TyreLife", "driver_number"]:
+    for col in ["stint_number", "lap_start", "lap_end", "tyre_age_at_start", "driver_number"]:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors="coerce").astype("Int64")
 
-    if "Compound" in df.columns:
-        df["Compound"] = df["Compound"].str.upper().str.strip()
+    if "compound" in df.columns:
+        df["compound"] = df["compound"].str.upper().str.strip()
 
     return df.reset_index(drop=True)
 
 
 def clean_pit(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
+    # Renombrar columnas a estándar
+    rename_dict = {
+        "PitDuration": "pit_duration",
+        "LaneDuration": "lane_duration",
+        "StopDuration": "stop_duration",
+        "Date": "date"
+    }
+    df = df.rename(columns={k: v for k, v in rename_dict.items() if k in df.columns})
 
     if "pit_duration" in df.columns:
         df["pit_duration"] = _parse_laptime(df["pit_duration"])
@@ -173,11 +217,18 @@ def clean_pit(df: pd.DataFrame) -> pd.DataFrame:
 
 def clean_intervals(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
+    # Renombrar columnas a estándar
+    rename_dict = {
+        "Gap": "gap_to_leader",
+        "Interval": "interval",
+        "Date": "date"
+    }
+    df = df.rename(columns={k: v for k, v in rename_dict.items() if k in df.columns})
 
     if "date" in df.columns:
         df["date"] = pd.to_datetime(df["date"], errors="coerce", utc=True)
 
-    for col in ["Gap", "Interval"]:
+    for col in ["gap_to_leader", "interval"]:
         if col in df.columns:
             df[col] = _parse_laptime(df[col])
 
@@ -186,11 +237,21 @@ def clean_intervals(df: pd.DataFrame) -> pd.DataFrame:
 
 def clean_weather(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
+    # Renombrar columnas a estándar
+    rename_dict = {
+        "AirTemp": "air_temperature",
+        "TrackTemp": "track_temperature",
+        "Humidity": "humidity",
+        "Pressure": "pressure",
+        "WindSpeed": "wind_speed",
+        "Date": "date"
+    }
+    df = df.rename(columns={k: v for k, v in rename_dict.items() if k in df.columns})
 
     if "date" in df.columns:
         df["date"] = pd.to_datetime(df["date"], errors="coerce", utc=True)
 
-    for col in ["AirTemp", "TrackTemp", "Humidity", "Pressure", "WindSpeed"]:
+    for col in ["air_temperature", "track_temperature", "humidity", "pressure", "wind_speed"]:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors="coerce")
 
@@ -263,22 +324,22 @@ def build_master(cleaned: dict) -> pd.DataFrame:
 
     # ── Stints (por stint, luego por vuelta) ───────────────
     stints = _concat_drivers(cleaned["driver"]["stints"])
-    if not stints.empty and "Stint" in stints.columns and "LapStart" in stints.columns:
+    if not stints.empty and "stint_number" in stints.columns and "lap_start" in stints.columns:
         # Expandir stint a nivel de vuelta
         stint_rows = []
         for _, row in stints.iterrows():
-            lap_start = row.get("LapStart", np.nan)
-            lap_end   = row.get("LapEnd",   np.nan)
+            lap_start = row.get("lap_start", np.nan)
+            lap_end   = row.get("lap_end",   np.nan)
             if pd.isna(lap_start) or pd.isna(lap_end):
                 continue
             for lap in range(int(lap_start), int(lap_end) + 1):
                 stint_rows.append({
                     "driver_number": row["driver_number"],
-                    "lap_number":     lap,
-                    "Stint":         row.get("Stint"),
-                    "Compound":      row.get("Compound"),
-                    "TyreLife":      row.get("TyreLife"),
-                    "FreshTyre":     row.get("FreshTyre"),
+                    "lap_number":    lap,
+                    "stint_number":  row.get("stint_number"),
+                    "compound":      row.get("compound"),
+                    "tyre_age_at_start": row.get("tyre_age_at_start"),
+                    # Assuming you don't have FreshTyre anymore based on your dict, remove it if so
                 })
         if stint_rows:
             stints_exp = pd.DataFrame(stint_rows)
@@ -293,25 +354,28 @@ def build_master(cleaned: dict) -> pd.DataFrame:
         ).reset_index()
         master = master.merge(pit_agg, on=["driver_number", "lap_number"], how="left")
         master["PitStop"] = master["PitStop"].fillna(0).astype(int)
+        
+        # AGREGA ESTA LÍNEA PARA RELLENAR LOS NULOS:
+        master["pit_duration"] = master["pit_duration"].fillna(0.0)
 
     # ── Intervalos (gap_to_leader al final de la vuelta) ───
     intervals = _concat_drivers(cleaned["driver"]["intervals"])
     if not intervals.empty and "lap_number" in intervals.columns:
         int_agg = intervals.groupby(["driver_number", "lap_number"]).last().reset_index()
         int_cols = ["driver_number", "lap_number"] + [
-            c for c in ["Gap", "Interval"] if c in int_agg.columns
+            c for c in ["gap_to_leader", "interval"] if c in int_agg.columns
         ]
         master = master.merge(int_agg[int_cols], on=["driver_number", "lap_number"], how="left")
 
     # ── Weather (merge por timestamp más cercano) ──────────
     weather = cleaned["global"].get("weather", pd.DataFrame())
-    if not weather.empty and "date" in weather.columns and "LapStartDate" in master.columns:
-        master["LapStartDate"] = pd.to_datetime(master["LapStartDate"], errors="coerce", utc=True)
+    if not weather.empty and "date" in weather.columns and "date_start" in master.columns:
+        master["date_start"] = pd.to_datetime(master["date_start"], errors="coerce", utc=True)
         weather = weather.sort_values("date").reset_index(drop=True)
         master = pd.merge_asof(
-            master.sort_values("LapStartDate"),
-            weather.rename(columns={"date": "LapStartDate"}),
-            on="LapStartDate",
+            master.sort_values("date_start"),
+            weather.rename(columns={"date": "date_start"}),
+            on="date_start",
             direction="nearest",
         )
 
@@ -338,16 +402,16 @@ def enrich(df: pd.DataFrame) -> pd.DataFrame:
         df["fuel_load_est"] = (max_lap - df["lap_number"] + 1) * BURN_RATE
 
     # gap_to_leader: diferencia de tiempo acumulada vs el líder por vuelta
-    if "LapTime" in df.columns:
-        lap_min = df.groupby("lap_number")["LapTime"].min().rename("leader_laptime")
+    if "lap_duration" in df.columns:
+        lap_min = df.groupby("lap_number")["lap_duration"].min().rename("leader_laptime")
         df = df.merge(lap_min, on="lap_number", how="left")
-        df["delta_to_leader"] = df["LapTime"] - df["leader_laptime"]
+        df["delta_to_leader"] = df["lap_duration"] - df["leader_laptime"]
         df = df.drop(columns=["leader_laptime"])
 
     # drs_active: flag si el piloto va significativamente más rápido que su propia media
-    if "LapTime" in df.columns:
-        driver_mean = df.groupby("driver_number")["LapTime"].transform("median")
-        df["pace_ratio"] = df["LapTime"] / driver_mean
+    if "lap_duration" in df.columns:
+        driver_mean = df.groupby("driver_number")["lap_duration"].transform("median")
+        df["pace_ratio"] = df["lap_duration"] / driver_mean
         df["is_fast_lap"] = df["pace_ratio"] < 0.98  # < 2 % del ritmo mediano
 
     return df
