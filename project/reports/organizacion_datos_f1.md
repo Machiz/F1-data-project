@@ -1,36 +1,67 @@
-# Documentación de Organización y Procesamiento de Datos F1
+# F1 Data Architecture & Pipeline Documentation
 
-Este documento detalla la arquitectura, el flujo de trabajo y las transformaciones aplicadas al proyecto de datos de Fórmula 1 para cumplir con los requisitos del curso [cite: semester_group_assignment_brief (1).md].
+This document provides a comprehensive overview of the data architecture, preprocessing pipeline, and output artifacts for the Formula 1 analytics project. The system is designed to transform raw telemetry and timing data into structured datasets suitable for machine learning and graph analysis.
 
-## 1. Organización del Proyecto
-El proyecto sigue una estructura de directorios diseñada para la reproducibilidad y el escalamiento de datos [cite: machiz/f1-data-project/F1-data-project-883597425611c129f47d8fe9c3af9220b33876e9/README.md]:
+## 1. Raw Data Organization (Catalog Layer)
 
-* `project/src/`: Contiene los scripts de extracción y pipelines [cite: machiz/f1-data-project/F1-data-project-ddbdb447f0582866e49972a73411cdcce44610d2/project/src/f1_events_pipeline.py].
-* `project/data/raw/`: Almacena los archivos CSV originales descargados de la API OpenF1 [cite: machiz/f1-data-project/F1-data-project-ddbdb447f0582866e49972a73411cdcce44610d2/project/data/raw/australia_2026/laps.csv].
-* `project/data/processed/`: Contiene las tablas maestras integradas en formato Parquet [cite: machiz/f1-data-project/F1-data-project-ddbdb447f0582866e49972a73411cdcce44610d2/project/src/f1_events_pipeline.py].
-* `project/data/events/`: Contiene los datasets de interacciones (adelantamientos y estrategias) para análisis de grafos [cite: machiz/f1-data-project/F1-data-project-ddbdb447f0582866e49972a73411cdcce44610d2/project/src/f1_events_pipeline.py].
+The initial architecture, which separated data by individual drivers (e.g., `laps_driver_16.csv`), was refactored into a consolidated, entity-based model. This approach is highly scalable and necessary for analyzing multi-driver interactions (like traffic and overtaking).
 
-## 2. Proceso de Extracción
-La extracción evolucionó de un enfoque limitado a uno robusto y escalable:
+### Directory Structure
 
-* **Enfoque Inicial**: Se extrajeron datos específicos para los pilotos 16 y 44 en tres carreras (Australia, China, Japón) [cite: machiz/f1-data-project/F1-data-project-883597425611c129f47d8fe9c3af9220b33876e9/project/src/Data_extract_AUS.py].
-* **Enfoque Final (`extract_f1_data.py`)**: Se implementó una extracción universal para los 22 pilotos de la parrilla [cite: machiz/f1-data-project/F1-data-project-ddbdb447f0582866e49972a73411cdcce44610d2/project/src/extract_f1_data.py].
-* **Manejo de Errores**: Se incorporó *Exponential Backoff* y pausas de cortesía para mitigar los errores "429 Too Many Requests" de la API [cite: machiz/f1-data-project/F1-data-project-ddbdb447f0582866e49972a73411cdcce44610d2/project/src/extract_f1_data.py].
+The raw data is organized by race and entity, containing data for all 20-22 drivers in single files:
 
-## 3. Pipeline de Procesamiento y Eventos (`f1_events_pipeline.py`)
-Este script unifica el preprocesamiento y la generación de capas de interacción [cite: machiz/f1-data-project/F1-data-project-ddbdb447f0582866e49972a73411cdcce44610d2/project/src/f1_events_pipeline.py]:
+```text
+project/
+└── data/
+    └── raw/
+        └── [race_name]_[year]/
+            ├── laps.csv          # All lap times and positions for the entire grid
+            ├── pit.csv           # All pit stop durations and timestamps
+            ├── stints.csv        # Tyre compound history for all drivers
+            ├── weather.csv       # Global weather metrics (temperature, humidity)
+            └── drivers.csv       # Driver metadata
+```
 
-### Fase 1: Preprocesamiento Global (Granularidad: Vuelta-Piloto)
-* **Limpieza de Tiempos**: Conversión de formatos de texto a segundos flotantes [cite: machiz/f1-data-project/F1-data-project-ddbdb447f0582866e49972a73411cdcce44610d2/project/src/f1_events_pipeline.py].
-* **Reconstrucción de Posiciones**: Si la columna `position` falta, se calcula matemáticamente mediante el tiempo acumulado de los pilotos por vuelta [cite: machiz/f1-data-project/F1-data-project-ddbdb447f0582866e49972a73411cdcce44610d2/project/src/f1_events_pipeline.py].
-* **Integración de Neumáticos**: Se expande la información de `stints.csv` para calcular la edad del neumático (`tyre_age`) en cada vuelta [cite: machiz/f1-data-project/F1-data-project-ddbdb447f0582866e49972a73411cdcce44610d2/project/src/f1_events_pipeline.py].
+### Rationale
+* **Scalability:** Processing a single `laps.csv` file with 1,000 rows is significantly faster and less error-prone than iterating through 22 separate files.
+* **Global Context:** To calculate relative positions (e.g., who is directly ahead of whom), all drivers must exist within the same tabular structure.
 
-### Fase 2: Extracción de Eventos (Granularidad: Evento/Interacción)
-* **Adelantamientos (Overtakes)**: Detección de cambios de posición en pista entre pilotos que no están en fase de pits [cite: machiz/f1-data-project/F1-data-project-ddbdb447f0582866e49972a73411cdcce44610d2/project/src/f1_events_pipeline.py].
-* **Estrategia de Pits (Undercuts)**: Evaluación del éxito o fallo de una parada en boxes comparando la posición antes y 3 vueltas después del evento [cite: machiz/f1-data-project/F1-data-project-ddbdb447f0582866e49972a73411cdcce44610d2/project/src/f1_events_pipeline.py].
+---
 
-## 4. Cumplimiento de Estándares Técnicos
-La organización de los datos permite realizar los experimentos obligatorios [cite: semester_group_assignment_brief (1).md]:
-* **Clustering**: Posible sobre el `master.parquet` usando métricas de degradación y tiempos [cite: machiz/f1-data-project/F1-data-project-ddbdb447f0582866e49972a73411cdcce44610d2/project/src/f1_events_pipeline.py].
-* **Ranking/Recomendación**: Modelado de posiciones finales a partir de la evolución de carrera [cite: semester_group_assignment_brief (1).md].
-* **Análisis de Grafos**: Soportado por los datasets en la carpeta `events/` que actúan como aristas entre nodos (pilotos) [cite: machiz/f1-data-project/F1-data-project-ddbdb447f0582866e49972a73411cdcce44610d2/project/src/f1_events_pipeline.py].
+## 2. The Preprocessing Pipeline (`f1_events_pipeline.py`)
+
+The pipeline script is the core engine that transforms raw sensor and timing data into meaningful sporting context. 
+
+### A. Cleaning and Normalization
+* **Standardization:** Column names are converted to `snake_case` (e.g., `LapTime` becomes `lap_duration`).
+* **Type Casting:** String-based lap times (e.g., "1:25.300") are parsed into continuous float seconds (`85.3`) to enable mathematical operations.
+
+### B. Mathematical Position Reconstruction (Feature Engineering)
+If the raw `laps.csv` lacks explicit `position` data, the pipeline reconstructs it using a Big Data approach:
+1.  **Cumulative Time:** Calculates the total elapsed race time for each driver at any given lap.
+2.  **Lap-by-Lap Ranking:** Ranks drivers based on their cumulative time. The driver with the lowest cumulative time at Lap $X$ is assigned `position = 1`.
+
+### C. Tyre Integration (Stint Expansion)
+Raw stint data defines ranges (e.g., "Stint 1: Laps 1 to 15"). The pipeline **expands** this range so that every individual lap row knows:
+* The exact tyre `compound` being used (Soft, Medium, Hard).
+* The current `tyre_age` (how many laps that specific set of tyres has completed).
+
+---
+
+## 3. Parquet Output Artifacts and Their Significance
+
+The pipeline outputs data in `.parquet` format. Parquet provides columnar storage and Snappy compression, drastically reducing file size and load times compared to CSVs. The system generates two distinct types of datasets, fulfilling different analytical requirements.
+
+### A. The Master Parquet (`data/processed/[race]_master.parquet`)
+
+* **Granularity:** 1 Row = 1 Lap for 1 Driver.
+* **Description:** This is the "Single Source of Truth." It contains the complete state of the car and driver for every lap of the race.
+* **Analytical Use Case:** This dense, chronological dataset is the mandatory foundation for **Clustering** models (e.g., grouping drivers by tyre degradation profiles) and **Ranking** algorithms (e.g., predicting final race positions based on early-race pace).
+
+### B. The Events Parquet (`data/events/[race]_events.parquet`)
+
+* **Granularity:** 1 Row = 1 Strategic Event or Interaction.
+* **Description:** This dataset removes continuous time. A row only exists if a specific action occurred between entities.
+    * **`On_Track_Overtake`:** Records physical passes on the track, detailing the `initiator` (attacker), the `target` (defender), the lap, and the tyre compounds involved.
+    * **`Pit_Strategy`:** Evaluates Undercut attempts. It records a driver entering the pits and evaluates if the strategy was successful (gained positions) 3 laps later.
+* **Analytical Use Case:** This relational dataset (Node $\rightarrow$ Edge $\rightarrow$ Node) is specifically engineered for the **Graph Layer** of the project. It allows for the mapping of interaction networks, visualizing driver aggressiveness and strategic battles.
