@@ -1,67 +1,103 @@
-# F1 Data Architecture & Pipeline Documentation
+# Documentación de Arquitectura y Pipeline de Datos F1
 
-This document provides a comprehensive overview of the data architecture, preprocessing pipeline, and output artifacts for the Formula 1 analytics project. The system is designed to transform raw telemetry and timing data into structured datasets suitable for machine learning and graph analysis.
+Este documento detalla la estructura organizacional, el flujo de transformación técnica y la semántica de los datos finales para el proyecto de inteligencia estratégica en Fórmula 1.
 
-## 1. Raw Data Organization (Catalog Layer)
+## 1. Organización de Datos Crudos (Capa de Catálogo)
 
-The initial architecture, which separated data by individual drivers (e.g., `laps_driver_16.csv`), was refactored into a consolidated, entity-based model. This approach is highly scalable and necessary for analyzing multi-driver interactions (like traffic and overtaking).
+La arquitectura ha sido diseñada para superar el modelo de archivos fragmentados por piloto, adoptando un esquema de **Entidades Consolidadas por Carrera**. Esto permite una visión holística de la competencia y habilita análisis de tráfico e interacciones complejas.
 
-### Directory Structure
+### Estructura de Directorios (Raw Data)
 
-The raw data is organized by race and entity, containing data for all 20-22 drivers in single files:
+Cada carrera descargada desde la API OpenF1 se almacena en una subcarpeta bajo el nombre del evento y el año:
 
 ```text
-project/
-└── data/
-    └── raw/
-        └── [race_name]_[year]/
-            ├── laps.csv          # All lap times and positions for the entire grid
-            ├── pit.csv           # All pit stop durations and timestamps
-            ├── stints.csv        # Tyre compound history for all drivers
-            ├── weather.csv       # Global weather metrics (temperature, humidity)
-            └── drivers.csv       # Driver metadata
+project/data/raw/
+└── [nombre_carrera]_[año]/
+    ├── laps.csv          # Tiempos de vuelta y posiciones de los 22 pilotos.
+    ├── pit.csv           # Registros de paradas en boxes para toda la parrilla.
+    ├── stints.csv        # Historial de compuestos de neumáticos por piloto.
+    ├── car_data.csv      # Telemetría de alta frecuencia (RPM, velocidad, etc.).
+    ├── weather.csv       # Condiciones climáticas globales.
+    └── drivers.csv       # Metadatos identificativos de la sesión.
 ```
 
-### Rationale
-* **Scalability:** Processing a single `laps.csv` file with 1,000 rows is significantly faster and less error-prone than iterating through 22 separate files.
-* **Global Context:** To calculate relative positions (e.g., who is directly ahead of whom), all drivers must exist within the same tabular structure.
+## 2. El Pipeline de Transformación (`f1_events_pipeline.py`)
 
----
+El pipeline actúa como el puente entre los datos crudos de sensores y las capas de inteligencia (Machine Learning y Grafos).
 
-## 2. The Preprocessing Pipeline (`f1_events_pipeline.py`)
+### Flujo de Trabajo Técnico:
 
-The pipeline script is the core engine that transforms raw sensor and timing data into meaningful sporting context. 
+1. **Carga e Ingesta:** El script detecta automáticamente las carpetas de carrera y lee los CSVs unificados.
 
-### A. Cleaning and Normalization
-* **Standardization:** Column names are converted to `snake_case` (e.g., `LapTime` becomes `lap_duration`).
-* **Type Casting:** String-based lap times (e.g., "1:25.300") are parsed into continuous float seconds (`85.3`) to enable mathematical operations.
+2. **Limpieza y Normalización:** Se estandarizan los nombres a `snake_case`. Los tiempos se convierten a segundos flotantes y se eliminan registros incompletos.
 
-### B. Mathematical Position Reconstruction (Feature Engineering)
-If the raw `laps.csv` lacks explicit `position` data, the pipeline reconstructs it using a Big Data approach:
-1.  **Cumulative Time:** Calculates the total elapsed race time for each driver at any given lap.
-2.  **Lap-by-Lap Ranking:** Ranks drivers based on their cumulative time. The driver with the lowest cumulative time at Lap $X$ is assigned `position = 1`.
+3. **Ingeniería de Características (Feature Engineering):**
 
-### C. Tyre Integration (Stint Expansion)
-Raw stint data defines ranges (e.g., "Stint 1: Laps 1 to 15"). The pipeline **expands** this range so that every individual lap row knows:
-* The exact tyre `compound` being used (Soft, Medium, Hard).
-* The current `tyre_age` (how many laps that specific set of tyres has completed).
+   * **Reconstrucción de Posición:** Si los datos de posición son inconsistentes o nulos en el origen, se calcula el tiempo acumulado de carrera y se asigna un ranking matemático exacto por vuelta.
 
----
+   * **Expansión de Neumáticos:** Se cruza la duración de los stints con las vueltas para inyectar el compuesto actual y calcular la edad del neumático (`tyre_age`) de forma continua.
 
-## 3. Parquet Output Artifacts and Their Significance
+4. **Extracción de Interacciones:** Se escanea la tabla maestra buscando cruces de posición (Adelantamientos) y detonadores de estrategia (Entradas a Pits) para generar el dataset de eventos.
 
-The pipeline outputs data in `.parquet` format. Parquet provides columnar storage and Snappy compression, drastically reducing file size and load times compared to CSVs. The system generates two distinct types of datasets, fulfilling different analytical requirements.
+## 3. Artefactos de Salida: Significado y Diccionario
 
-### A. The Master Parquet (`data/processed/[race]_master.parquet`)
+El pipeline unifica y comprime la información, generando dos archivos Parquet optimizados (Snappy) con granularidades específicas.
 
-* **Granularity:** 1 Row = 1 Lap for 1 Driver.
-* **Description:** This is the "Single Source of Truth." It contains the complete state of the car and driver for every lap of the race.
-* **Analytical Use Case:** This dense, chronological dataset is the mandatory foundation for **Clustering** models (e.g., grouping drivers by tyre degradation profiles) and **Ranking** algorithms (e.g., predicting final race positions based on early-race pace).
+### A. Master Parquet (`data/processed/[carrera]_master.parquet`)
 
-### B. The Events Parquet (`data/events/[race]_events.parquet`)
+**Granularidad:** 1 fila = 1 vuelta de 1 piloto. Es el dataset cronológico base.
 
-* **Granularity:** 1 Row = 1 Strategic Event or Interaction.
-* **Description:** This dataset removes continuous time. A row only exists if a specific action occurred between entities.
-    * **`On_Track_Overtake`:** Records physical passes on the track, detailing the `initiator` (attacker), the `target` (defender), the lap, and the tyre compounds involved.
-    * **`Pit_Strategy`:** Evaluates Undercut attempts. It records a driver entering the pits and evaluates if the strategy was successful (gained positions) 3 laps later.
-* **Analytical Use Case:** This relational dataset (Node $\rightarrow$ Edge $\rightarrow$ Node) is specifically engineered for the **Graph Layer** of the project. It allows for the mapping of interaction networks, visualizing driver aggressiveness and strategic battles.
+| **Columna** | **Origen CSV** | **Descripción** | 
+| :--- | :--- | :--- |
+| `meeting_key` | `laps.csv` | Identificador único del evento (Gran Premio). | 
+| `session_key` | `laps.csv` | Identificador único de la sesión (ej. Carrera). | 
+| `driver_number` | `laps.csv` | Identificador único del piloto. | 
+| `lap_number` | `laps.csv` | Número de la vuelta actual. | 
+| `date_start` | `laps.csv` | Marca de tiempo (timestamp) exacta de inicio de la vuelta. | 
+| `duration_sector_1` | `laps.csv` | Tiempo empleado en recorrer el sector 1 (en segundos). | 
+| `duration_sector_2` | `laps.csv` | Tiempo empleado en recorrer el sector 2 (en segundos). | 
+| `duration_sector_3` | `laps.csv` | Tiempo empleado en recorrer el sector 3 (en segundos). | 
+| `i1_speed` | `laps.csv` | Velocidad registrada en la primera trampa intermedia (km/h). | 
+| `i2_speed` | `laps.csv` | Velocidad registrada en la segunda trampa intermedia (km/h). | 
+| `st_speed` | `laps.csv` | Velocidad máxima registrada en la trampa de velocidad principal (speed trap) (km/h). | 
+| `is_pit_out_lap` | `laps.csv` | Flag booleano que indica si es una vuelta de salida desde boxes. | 
+| `lap_duration` | `laps.csv` | Tiempo de vuelta normalizado en segundos flotantes. | 
+| `segments_sector_1` | `laps.csv` | Array de valores categóricos representando los mini-sectores del sector 1. | 
+| `segments_sector_2` | `laps.csv` | Array de valores categóricos representando los mini-sectores del sector 2. | 
+| `segments_sector_3` | `laps.csv` | Array de valores categóricos representando los mini-sectores del sector 3. | 
+| `position` | `laps.csv` | Posición en pista (limpiada o recalculada matemáticamente por tiempo acumulado). | 
+| `compound` | `stints.csv` | Compuesto de neumático usado (SOFT, MEDIUM, HARD, UNKNOWN). | 
+| `stint_number` | `stints.csv` | Número de stint actual del piloto en la carrera (secuencia de paradas). | 
+| `tyre_age` | `stints.csv` | Variable calculada: Vueltas acumuladas con el set de neumáticos actual. | 
+| `pit_duration` | `pit.csv` | Segundos totales gastados en la calle de boxes durante esa vuelta. | 
+| `is_pit_lap` | `pit.csv` | Flag binario (1 si paró en boxes en esa vuelta, 0 si no). | 
+
+* **Significado Analítico:** Es el "Mapa de Estado" de la carrera. Proporciona la materia prima para experimentos de **Clustering** (ej. agrupar perfiles de degradación de neumáticos) y algoritmos de **Ranking/Recomendación** (ej. predecir posiciones finales). Las nuevas métricas de sectores (duration y segments) abren posibilidades a algoritmos de predicción de ritmo más finos.
+
+### B. Events Parquet (`data/events/[carrera]_events.parquet`)
+
+**Granularidad:** 1 fila = 1 interacción estratégica (El tiempo continuo desaparece).
+
+*Nota sobre el origen:* Este archivo no se descarga directamente de la API, sino que se genera algorítmicamente escaneando secuencialmente el dataset Master. A continuación, se detalla el archivo CSV original del cual proviene la lógica para extraer cada característica del evento:
+
+| **Columna** | **Origen CSV (Vía Master)** | **Descripción** | 
+| :--- | :--- | :--- |
+| `race_id` | Metadata del Directorio | Identificador del evento (Ej: "australia_2026"). | 
+| `lap_number` | `laps.csv` | Vuelta exacta en la que se detonó la acción. | 
+| `event_type` | `laps.csv` + `pit.csv` | Categoría calculada evaluando cambios de posición físicos (`On_Track_Overtake`) o flags de entradas a boxes (`Pit_Strategy`). | 
+| `initiator_driver` | `laps.csv` | **NODO ORIGEN**: Piloto que ataca, adelanta o inicia la estrategia de pit (derivado del `driver_number`). | 
+| `target_driver` | `laps.csv` | **NODO DESTINO**: Piloto que defiende la posición (0 si es estrategia general contra la parrilla). | 
+| `initiator_compound` | `stints.csv` | Compuesto de neumático del atacante al momento del evento, extraído cruzando la vuelta con el historial de stints. | 
+| `initiator_pos_change` | `laps.csv` | Resultado del evento calculado comparando la columna `position` entre la vuelta actual y vueltas previas/futuras (Ej: "P10 -> P7" o "Undercut_Success"). | 
+
+* **Significado Analítico:** Es la "Capa de Red". Define las conexiones (aristas) entre pilotos (nodos) para el **Análisis de Grafos**, permitiendo modelar redes de agresión e influencia estratégica en la pista.
+
+## 4. Relevancia para el Proyecto Final
+
+Esta arquitectura de datos garantiza el cumplimiento estricto de los estándares técnicos exigidos para aprobar el curso:
+
+* **Dataset No Trivial:** Al unificar los datos de los 22 pilotos, se generan bases de datos de alta dimensionalidad con telemetría a nivel sectorial.
+
+* **Feature Layer Implementada:** Incluye variables numéricas derivadas de alta complejidad como la degradación (`tyre_age`) y posiciones calculadas.
+
+* **Graph Layer Preparada:** El archivo relacional de eventos habilita la construcción de grafos para la segunda mitad del semestre.
