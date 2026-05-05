@@ -122,7 +122,7 @@ class OpenF1DataExtractor:
 def main():
     parser = argparse.ArgumentParser(description="F1 Data Pipeline - Ingesta Universal")
     parser.add_argument("--year", type=int, default=2026, help="Año de la temporada a extraer")
-    parser.add_argument("--races", nargs="+", default=["Australia", "China", "Japan"], 
+    parser.add_argument("--races", nargs="+", default=["United States"], 
                         help="Países separados por espacio (ej: --races Australia Monza Mexico)")
     
     args = parser.parse_args()
