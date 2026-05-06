@@ -1,2 +1,0 @@
-session_key,session_type,session_name,date_start,date_end,meeting_key,circuit_key,circuit_short_name,country_key,country_code,country_name,location,gmt_offset,year,is_cancelled
-11253,Race,Race,2026-03-29T05:00:00+00:00,2026-03-29T07:00:00+00:00,1281,46,Suzuka,4,JPN,Japan,Suzuka,09:00:00,2026,False
