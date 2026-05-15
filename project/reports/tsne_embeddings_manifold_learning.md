@@ -31,6 +31,15 @@ La elección de proyectar el espacio latente estrictamente en **2 y 3 dimensione
 1. **Limitación Matemática (Algoritmo Barnes-Hut):** La implementación óptima de t-SNE (utilizada a través de `scikit-learn`) emplea la aproximación *Barnes-Hut*. Este algoritmo reduce la complejidad computacional masivamente (de $O(N^2)$ a $O(N \log N)$), lo que permite que el código corra rápido en datasets densos. Sin embargo, matemáticamente, **Barnes-Hut está confinado exclusivamente a 2 o 3 componentes**. Forzar el modelo a 4 o más dimensiones requeriría cambiar al método `exact`, el cual es computacionalmente prohibitivo e inviable para el volumen de telemetría de Fórmula 1.
 2. **Objetivo Dual (Feature Engineering + Interpretabilidad):** A diferencia de PCA (donde extrajimos 15 dimensiones), el objetivo fundamental de Manifold Learning es la interpretación topológica. El análisis táctico exige validación visual humana. Extraer 3 componentes maximiza la cantidad de información latente que le daremos a los algoritmos predictivos posteriores (Machine Learning), al mismo tiempo que se mantiene en el límite de lo que un analista puede explorar, graficar y rotar en un entorno tridimensional.
 
+## 2.2. Comparativa Estratégica: t-SNE(Raw Features) vs t-SNE(PCA Components)
+
+El pipeline de embeddings se ejecutó de forma paralela en dos fuentes de datos distintas para comparar sus resultados topológicos:
+1. **t-SNE sobre ~500 Raw Features:** Se inyectó la matriz de variables original estandarizada. El resultado es un mapa latente que preserva la vecindad usando todas las variables del sistema, pero que a menudo presenta alta dispersión debido al "ruido" de la multicolinealidad.
+2. **t-SNE sobre 15 PCA Components:** Se inyectó la matriz reducida extraída del `pca_scores.parquet`. En este flujo, el modelo PCA actúa primero como un filtro de ruido masivo.
+
+> [!NOTE]
+> **Hallazgo Clave (Insight):** El notebook demuestra visualmente que aplicar t-SNE sobre los componentes del PCA genera agrupamientos **mucho más definidos, compactos y con menos dispersión estocástica**. Al eliminar primero las redundancias lineales con PCA, liberamos a t-SNE para que enfoque todo su poder matemático en clasificar puramente la "señal táctica real".
+
 ## 3. Exploración Visual del Espacio Latente
 El notebook genera 4 perspectivas críticas sobre el espacio topológico descubierto:
 
