@@ -3,7 +3,7 @@
 Este reporte detalla el proceso, evaluación y hallazgos del modelo de **Hierarchical (Agglomerative) Clustering** aplicado sobre los componentes principales (PCA) extraídos del dataset de eventos tácticos de la Fórmula 1. 
 
 ## 1. Contexto y Archivos
-*   **Notebook:** `project/notebooks/Hierarchical_Clustering_V1.ipynb`
+*   **Notebook:** `project/notebooks/clustering models/Hierarchical_Clustering_Tactical_Events.ipynb`
 *   **Entrada:** `pca_scores.parquet` (15 Componentes Principales que retienen >80% de la varianza).
 *   **Algoritmo:** Agrupamiento Jerárquico Aglomerativo (Agglomerative Clustering).
 *   **Linkage:** Método de Ward (minimiza la varianza intra-cluster).
