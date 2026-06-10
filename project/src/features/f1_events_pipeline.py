@@ -11,7 +11,7 @@ warnings.filterwarnings('ignore')
 # CONFIGURACIÓN DE RUTAS 
 # =====================================================================
 SRC_DIR = Path(__file__).resolve().parent
-PROJECT_DIR = SRC_DIR.parent
+PROJECT_DIR = SRC_DIR.parent.parent
 RAW_DIR = PROJECT_DIR / "data" / "raw"
 PROCESSED_DIR = PROJECT_DIR / "data" / "processed"
 EVENTS_DIR = PROJECT_DIR / "data" / "events"

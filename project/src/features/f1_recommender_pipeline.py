@@ -9,7 +9,7 @@ warnings.filterwarnings('ignore')
 
 # Configuración de rutas
 SRC_DIR = Path(__file__).resolve().parent
-PROJECT_DIR = SRC_DIR.parent
+PROJECT_DIR = SRC_DIR.parent.parent
 RAW_DIR = PROJECT_DIR / "data" / "raw"
 FEATURES_DIR = PROJECT_DIR / "data" / "features"
 
