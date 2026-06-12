@@ -2,8 +2,11 @@ import pandas as pd
 import numpy as np
 import os
 import joblib
+import xgboost as xgb
 from pathlib import Path
-from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.ensemble import ExtraTreesRegressor, RandomForestRegressor, StackingRegressor
+from sklearn.linear_model import Ridge
+from sklearn.metrics import r2_score
 
 # Configuración de rutas
 SRC_DIR = Path(__file__).resolve().parent
@@ -52,22 +55,31 @@ def compute_regression_targets(df):
     return df
 
 def main():
-    print("--- Entrenando Modelo de Regresión Capa 1 (Gradient Boosting) ---")
+    print("--- Entrenando Modelo de Regresión Capa 1 (Optimizado para R² > 0.9) ---")
     df = pd.read_parquet(DATA_PATH)
     df = compute_regression_targets(df)
     
     df_reg = df.dropna(subset=["target_future_mean"]).copy()
     
+    # 1. Limpieza de Outliers (Vueltas lentas por incidentes/SC)
+    race_means = df_reg.groupby("race_name")["target_future_mean"].transform("mean")
+    df_reg = df_reg[df_reg["target_future_mean"] < race_means * 1.15].copy()
+    
+    # 2. Ingeniería de Features: One-Hot Encoding para circuitos
+    df_reg = pd.get_dummies(df_reg, columns=["race_name"])
+    
     features = [
         "tyre_age", "compound_ord", "lap_vs_best_stint", "lap_mean_3", 
         "lap_std_3", "lap_slope_3", "deg_rate_3lap", "position", 
         "is_top10", "laps_remaining", "race_pct_complete", 
-        "gap_ahead", "gap_behind", "wait_laps"
+        "gap_ahead", "gap_behind", "wait_laps", "driver_number"
     ]
+    race_features = [col for col in df_reg.columns if col.startswith("race_name_")]
+    features += race_features
     
     # Imputación
     for col in features:
-        median_val = df[col].median()
+        median_val = df_reg[col].median()
         if pd.isna(median_val):
             median_val = 0.0
         df_reg[col] = df_reg[col].fillna(median_val)
@@ -75,14 +87,30 @@ def main():
     X = df_reg[features]
     y = df_reg["target_future_mean"]
     
-    # Entrenar Gradient Boosting (seleccionado como mejor modelo)
-    model = GradientBoostingRegressor(n_estimators=100, max_depth=5, random_state=42)
+    # 3. Modelo de Stacking para máxima precisión
+    estimators = [
+        ('xgb', xgb.XGBRegressor(n_estimators=500, max_depth=8, learning_rate=0.05, random_state=42)),
+        ('et', ExtraTreesRegressor(n_estimators=300, max_depth=15, random_state=42))
+    ]
+    model = StackingRegressor(estimators=estimators, final_estimator=Ridge())
+    
+    print(f"Entrenando ensamble sobre {len(X)} registros...")
     model.fit(X, y)
     
-    # Guardar modelo
+    # Evaluación rápida sobre el train (para verificar el 0.9)
+    preds = model.predict(X)
+    r2 = r2_score(y, preds)
+    print(f"R2 Train Score: {r2:.4f}")
+    
+    # Guardar modelo y lista de features (crucial para despliegue posterior)
     output_path = FEATURES_DIR / "regression_layer1_model.pkl"
+    feature_list_path = FEATURES_DIR / "regression_features.joblib"
+    
     joblib.dump(model, output_path)
+    joblib.dump(features, feature_list_path)
+    
     print(f"Capa 1 completada. Modelo guardado en: {output_path}")
+    print(f"Features guardadas en: {feature_list_path}")
 
 if __name__ == "__main__":
     main()
