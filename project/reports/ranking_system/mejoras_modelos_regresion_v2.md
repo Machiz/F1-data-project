@@ -13,13 +13,13 @@ Este documento resume las optimizaciones implementadas en los modelos de regresi
 
 Se migró de un modelo simple a una arquitectura de **Ensamble por Stacking**:
 
-| Modelo | R2 Score Inicial | R2 Score Final (Optimizado) |
+| Modelo | R2 Score Inicial (Test CV) | R2 Score Final (Train) |
 | :--- | :---: | :---: |
 | Linear Regression | 0.0890 | 0.8539 |
 | Gradient Boosting (Base) | 0.5459 | 0.9580 |
-| **XGBoost (Fine-tuned)** | - | **0.9790** |
-| **Extra Trees (Optimized)** | - | **0.9819** |
-| **Stacking (Final Ensemble)** | - | **0.9826** |
+| **XGBoost (Fine-tuned)** | 0.3778 | **0.9790** |
+| **Extra Trees (Optimized)** | 0.4065 | **0.9982** |
+| **Stacking (Final Ensemble)** | **0.3958** | **0.9913** |
 
 ## 3. Archivos Modificados
 
