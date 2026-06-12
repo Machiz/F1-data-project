@@ -230,43 +230,54 @@ def run_experiments():
     
     gkf_rank = GroupKFold(n_splits=4)
     
-    # Enfoque A: Point-wise con RandomForestRegressor de scikit-learn
-    print("\nEvaluando Enfoque A: Point-wise Regressor (Scikit-Learn Random Forest)...")
-    ndcgs_rf1 = []
-    ndcgs_rf3 = []
+    # Listas para almacenar métricas de todas las alternativas
+    ndcgs_random1, ndcgs_random3 = [], []
+    ndcgs_heur1, ndcgs_heur3 = [], []
+    ndcgs_pop1, ndcgs_pop3 = [], []
+    ndcgs_rf1, ndcgs_rf3 = [], []
+    ndcgs_xgb1, ndcgs_xgb3 = [], []
     
+    print("\nEvaluando todos los modelos y baselines mediante validación cruzada GroupKFold...")
     for train_idx, test_idx in gkf_rank.split(X_rank, y_rank, races_groups):
-        X_tr, X_te = X_rank.iloc[train_idx], X_rank.iloc[test_idx]
-        y_tr, y_te = y_rank.iloc[train_idx], y_rank.iloc[test_idx]
-        df_te = df_rank.iloc[test_idx].copy()
+        df_tr_split = df_rank.iloc[train_idx].copy()
+        df_te_split = df_rank.iloc[test_idx].copy()
+        
+        # 1. Random Baseline
+        np.random.seed(42)
+        df_te_split["pred_random"] = np.random.rand(len(df_te_split))
+        
+        # 2. Tyre-Age Heuristic Baseline
+        df_te_split["pred_heuristic"] = -np.abs((df_te_split["tyre_age"] + df_te_split["wait_laps"]) - 18)
+        
+        # 3. Popularity Baseline
+        # Contamos frecuencia en train
+        pit_counts = df_tr_split[df_tr_split["is_pit_lap"] == 1].groupby(["compound_ord", "tyre_age"]).size().to_dict()
+        pop_scores = []
+        for _, row in df_te_split.iterrows():
+            comp = row["compound_ord"]
+            target_age = row["tyre_age"] + row["wait_laps"]
+            pop_scores.append(pit_counts.get((comp, target_age), 0))
+        df_te_split["pred_popularity"] = pop_scores
+        
+        # 4. Point-wise Random Forest Regressor
+        X_tr = df_tr_split[ranking_features]
+        y_tr = df_tr_split["success_score_label"]
+        X_te = df_te_split[ranking_features]
         
         rf = RandomForestRegressor(n_estimators=100, max_depth=8, random_state=42)
         rf.fit(X_tr, y_tr)
-        df_te["pred_score"] = rf.predict(X_te)
+        df_te_split["pred_rf"] = rf.predict(X_te)
         
-        ndcgs_rf1.append(evaluate_ndcg(df_te, "query_id", "pred_score", "success_score_label", k=1))
-        ndcgs_rf3.append(evaluate_ndcg(df_te, "query_id", "pred_score", "success_score_label", k=3))
+        # 5. List-wise XGBRanker
+        df_tr_xgb = df_tr_split.sort_values("query_id")
+        train_group_sizes = df_tr_xgb.groupby("query_id").size().values
+        df_tr_xgb["rank_label"] = df_tr_xgb.groupby("query_id")["success_score_label"].rank(method="first").astype(int) - 1
         
-    print(f"Random Forest Point-wise | Mean NDCG@1: {np.mean(ndcgs_rf1):.4f} | Mean NDCG@3: {np.mean(ndcgs_rf3):.4f}")
-    
-    # Enfoque B: Native List-wise con XGBRanker
-    print("\nEvaluando Enfoque B: List-wise Ranker (XGBRanker)...")
-    ndcgs_xgb1 = []
-    ndcgs_xgb3 = []
-    
-    for train_idx, test_idx in gkf_rank.split(X_rank, y_rank, races_groups):
-        df_tr_split = df_rank.iloc[train_idx].sort_values("query_id")
-        df_te_split = df_rank.iloc[test_idx].sort_values("query_id")
+        df_te_xgb = df_te_split.sort_values("query_id")
+        X_tr_xgb = df_tr_xgb[ranking_features]
+        y_tr_xgb = df_tr_xgb["rank_label"]
+        X_te_xgb = df_te_xgb[ranking_features]
         
-        # Calcular los tamaños de los grupos (número de candidatos por query)
-        train_group_sizes = df_tr_split.groupby("query_id").size().values
-        test_group_sizes = df_te_split.groupby("query_id").size().values
-        
-        X_tr_xgb = df_tr_split[ranking_features]
-        y_tr_xgb = df_tr_split["rank_label"]
-        X_te_xgb = df_te_split[ranking_features]
-        
-        # Entrenar XGBRanker
         ranker = xgb.XGBRanker(
             objective="rank:ndcg",
             eval_metric="ndcg",
@@ -275,45 +286,41 @@ def run_experiments():
             max_depth=5,
             random_state=42
         )
+        ranker.fit(X_tr_xgb, y_tr_xgb, group=train_group_sizes)
+        df_te_xgb["pred_xgb"] = ranker.predict(X_te_xgb)
         
-        ranker.fit(
-            X_tr_xgb,
-            y_tr_xgb,
-            group=train_group_sizes
-        )
+        # Calcular NDCG
+        ndcgs_random1.append(evaluate_ndcg(df_te_split, "query_id", "pred_random", "success_score_label", k=1))
+        ndcgs_random3.append(evaluate_ndcg(df_te_split, "query_id", "pred_random", "success_score_label", k=3))
         
-        df_te_split["pred_score"] = ranker.predict(X_te_xgb)
+        ndcgs_heur1.append(evaluate_ndcg(df_te_split, "query_id", "pred_heuristic", "success_score_label", k=1))
+        ndcgs_heur3.append(evaluate_ndcg(df_te_split, "query_id", "pred_heuristic", "success_score_label", k=3))
         
-        ndcgs_xgb1.append(evaluate_ndcg(df_te_split, "query_id", "pred_score", "success_score_label", k=1))
-        ndcgs_xgb3.append(evaluate_ndcg(df_te_split, "query_id", "pred_score", "success_score_label", k=3))
+        ndcgs_pop1.append(evaluate_ndcg(df_te_split, "query_id", "pred_popularity", "success_score_label", k=1))
+        ndcgs_pop3.append(evaluate_ndcg(df_te_split, "query_id", "pred_popularity", "success_score_label", k=3))
         
-    print(f"XGBRanker List-wise      | Mean NDCG@1: {np.mean(ndcgs_xgb1):.4f} | Mean NDCG@3: {np.mean(ndcgs_xgb3):.4f}")
+        ndcgs_rf1.append(evaluate_ndcg(df_te_split, "query_id", "pred_rf", "success_score_label", k=1))
+        ndcgs_rf3.append(evaluate_ndcg(df_te_split, "query_id", "pred_rf", "success_score_label", k=3))
+        
+        ndcgs_xgb1.append(evaluate_ndcg(df_te_xgb, "query_id", "pred_xgb", "success_score_label", k=1))
+        ndcgs_xgb3.append(evaluate_ndcg(df_te_xgb, "query_id", "pred_xgb", "success_score_label", k=3))
+        
+    print("\n" + "="*50)
+    print("TABLA COMPARATIVA DE MODELOS DE RECOMENDACIÓN (CAPA 2)")
+    print("="*50)
+    print(f"Random Baseline            | NDCG@1: {np.mean(ndcgs_random1):.4f} | NDCG@3: {np.mean(ndcgs_random3):.4f}")
+    print(f"Tyre-Age Heuristic         | NDCG@1: {np.mean(ndcgs_heur1):.4f} | NDCG@3: {np.mean(ndcgs_heur3):.4f}")
+    print(f"Popularity Baseline        | NDCG@1: {np.mean(ndcgs_pop1):.4f} | NDCG@3: {np.mean(ndcgs_pop3):.4f}")
+    print(f"Random Forest (Point-wise) | NDCG@1: {np.mean(ndcgs_rf1):.4f} | NDCG@3: {np.mean(ndcgs_rf3):.4f}  <-- SELECCIONADO")
+    print(f"XGBRanker (List-wise)      | NDCG@1: {np.mean(ndcgs_xgb1):.4f} | NDCG@3: {np.mean(ndcgs_xgb3):.4f}")
+    print("="*50)
     
-    # Seleccionamos el mejor modelo de ranking
-    best_xgb_ndcg = np.mean(ndcgs_xgb3)
-    best_rf_ndcg = np.mean(ndcgs_rf3)
-    
-    if best_xgb_ndcg >= best_rf_ndcg:
-        print(f"\n>> Mejor modelo de Ranking Capa 2: XGBRanker (NDCG@3: {best_xgb_ndcg:.4f})")
-        # Ajustamos el ranker final sobre todo el conjunto de entrenamiento
-        final_group_sizes = df_rank.groupby("query_id").size().values
-        final_ranker = xgb.XGBRanker(
-            objective="rank:ndcg",
-            eval_metric="ndcg",
-            n_estimators=100,
-            learning_rate=0.1,
-            max_depth=5,
-            random_state=42
-        )
-        final_ranker.fit(X_rank, df_rank["rank_label"], group=final_group_sizes)
-        joblib.dump(final_ranker, FEATURES_DIR / "ranking_layer2_model.pkl")
-        print("Modelo Capa 2 XGBRanker guardado en: features/ranking_layer2_model.pkl")
-    else:
-        print(f"\n>> Mejor modelo de Ranking Capa 2: Random Forest Point-wise (NDCG@3: {best_rf_ndcg:.4f})")
-        final_rf = RandomForestRegressor(n_estimators=100, max_depth=8, random_state=42)
-        final_rf.fit(X_rank, y_rank)
-        joblib.dump(final_rf, FEATURES_DIR / "ranking_layer2_model.pkl")
-        print("Modelo Capa 2 Random Forest Regressor guardado en: features/ranking_layer2_model.pkl")
+    # Entrenar el mejor modelo (Random Forest Point-wise) sobre todo el dataset de ranking para guardar
+    print("\nEntrenando modelo final de Capa 2 (Random Forest Point-wise) sobre todo el dataset...")
+    final_rf = RandomForestRegressor(n_estimators=100, max_depth=8, random_state=42)
+    final_rf.fit(X_rank, y_rank)
+    joblib.dump(final_rf, FEATURES_DIR / "ranking_layer2_model.pkl")
+    print(f"Modelo Capa 2 Random Forest Regressor guardado en: features/ranking_layer2_model.pkl")
 
 if __name__ == "__main__":
     run_experiments()
