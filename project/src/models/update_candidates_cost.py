@@ -22,22 +22,31 @@ def main():
         
     model = joblib.load(model_path)
     
-    features = [
-        "tyre_age", "compound_ord", "lap_vs_best_stint", "lap_mean_3", 
-        "lap_std_3", "lap_slope_3", "deg_rate_3lap", "position", 
-        "is_top10", "laps_remaining", "race_pct_complete", 
-        "gap_ahead", "gap_behind", "wait_laps"
-    ]
+    # Cargar la lista de features entrenadas (que incluyen dummy variables de race_name y driver_number)
+    feature_list_path = FEATURES_DIR / "regression_features.joblib"
+    if not feature_list_path.exists():
+        print(f"Error: No se encuentra la lista de features {feature_list_path.name}. Ejecute primero train_regression_layer1.py")
+        return
+        
+    features = joblib.load(feature_list_path)
     
-    # Imputación sobre df general
+    # Preprocesamiento: Generar variables dummy para race_name para alinearse con el modelo entrenado
+    df_processed = pd.get_dummies(df, columns=["race_name"])
+    
+    # Asegurar que todas las columnas esperadas estén presentes en el df procesado (rellenar con 0 si faltan)
     for col in features:
-        median_val = df[col].median()
+        if col not in df_processed.columns:
+            df_processed[col] = 0
+            
+    # Imputación de nulos sobre las columnas correspondientes
+    for col in features:
+        median_val = df_processed[col].median()
         if pd.isna(median_val):
             median_val = 0.0
-        df[col] = df[col].fillna(median_val)
+        df_processed[col] = df_processed[col].fillna(median_val)
         
     # Predecir ritmo esperado de permanencia
-    df["predicted_future_pace"] = model.predict(df[features])
+    df["predicted_future_pace"] = model.predict(df_processed[features])
     
     # predicted_cost_of_staying = wait_laps * (predicted_future_pace - current_lap_duration)
     df["predicted_cost_of_staying"] = df["wait_laps"] * (df["predicted_future_pace"] - df["lap_duration"])
