@@ -1,0 +1,241 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"><key id="d0" for="edge" attr.name="weight" attr.type="long"/>
+<graph edgedefault="directed"><node id="NOR"/>
+<node id="VER"/>
+<node id="BOR"/>
+<node id="HAD"/>
+<node id="GAS"/>
+<node id="PER"/>
+<node id="ANT"/>
+<node id="ALO"/>
+<node id="LEC"/>
+<node id="STR"/>
+<node id="ALB"/>
+<node id="HUL"/>
+<node id="LAW"/>
+<node id="OCO"/>
+<node id="LIN"/>
+<node id="COL"/>
+<node id="HAM"/>
+<node id="SAI"/>
+<node id="RUS"/>
+<node id="BOT"/>
+<node id="PIA"/>
+<node id="BEA"/>
+<edge source="NOR" target="VER">
+  <data key="d0">2</data>
+</edge>
+<edge source="NOR" target="LIN">
+  <data key="d0">2</data>
+</edge>
+<edge source="NOR" target="BEA">
+  <data key="d0">2</data>
+</edge>
+<edge source="NOR" target="BOR">
+  <data key="d0">1</data>
+</edge>
+<edge source="NOR" target="ALB">
+  <data key="d0">1</data>
+</edge>
+<edge source="VER" target="LIN">
+  <data key="d0">1</data>
+</edge>
+<edge source="VER" target="ANT">
+  <data key="d0">1</data>
+</edge>
+<edge source="VER" target="NOR">
+  <data key="d0">1</data>
+</edge>
+<edge source="BOR" target="NOR">
+  <data key="d0">2</data>
+</edge>
+<edge source="BOR" target="VER">
+  <data key="d0">1</data>
+</edge>
+<edge source="BOR" target="OCO">
+  <data key="d0">2</data>
+</edge>
+<edge source="BOR" target="GAS">
+  <data key="d0">1</data>
+</edge>
+<edge source="GAS" target="NOR">
+  <data key="d0">1</data>
+</edge>
+<edge source="GAS" target="VER">
+  <data key="d0">1</data>
+</edge>
+<edge source="GAS" target="OCO">
+  <data key="d0">2</data>
+</edge>
+<edge source="GAS" target="BEA">
+  <data key="d0">1</data>
+</edge>
+<edge source="GAS" target="BOR">
+  <data key="d0">2</data>
+</edge>
+<edge source="GAS" target="ALB">
+  <data key="d0">1</data>
+</edge>
+<edge source="GAS" target="SAI">
+  <data key="d0">1</data>
+</edge>
+<edge source="PER" target="ALB">
+  <data key="d0">1</data>
+</edge>
+<edge source="PER" target="SAI">
+  <data key="d0">1</data>
+</edge>
+<edge source="PER" target="LAW">
+  <data key="d0">1</data>
+</edge>
+<edge source="PER" target="COL">
+  <data key="d0">1</data>
+</edge>
+<edge source="ANT" target="BEA">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALO" target="BOT">
+  <data key="d0">2</data>
+</edge>
+<edge source="ALO" target="COL">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALO" target="STR">
+  <data key="d0">1</data>
+</edge>
+<edge source="LEC" target="RUS">
+  <data key="d0">2</data>
+</edge>
+<edge source="LEC" target="HAM">
+  <data key="d0">2</data>
+</edge>
+<edge source="STR" target="BOT">
+  <data key="d0">1</data>
+</edge>
+<edge source="STR" target="ALO">
+  <data key="d0">1</data>
+</edge>
+<edge source="STR" target="COL">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALB" target="SAI">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALB" target="LAW">
+  <data key="d0">1</data>
+</edge>
+<edge source="LAW" target="VER">
+  <data key="d0">1</data>
+</edge>
+<edge source="LAW" target="ALB">
+  <data key="d0">1</data>
+</edge>
+<edge source="LAW" target="SAI">
+  <data key="d0">1</data>
+</edge>
+<edge source="LAW" target="PER">
+  <data key="d0">1</data>
+</edge>
+<edge source="LAW" target="BOT">
+  <data key="d0">1</data>
+</edge>
+<edge source="OCO" target="VER">
+  <data key="d0">1</data>
+</edge>
+<edge source="OCO" target="GAS">
+  <data key="d0">2</data>
+</edge>
+<edge source="OCO" target="BEA">
+  <data key="d0">1</data>
+</edge>
+<edge source="OCO" target="BOR">
+  <data key="d0">2</data>
+</edge>
+<edge source="OCO" target="ALB">
+  <data key="d0">1</data>
+</edge>
+<edge source="OCO" target="SAI">
+  <data key="d0">1</data>
+</edge>
+<edge source="LIN" target="NOR">
+  <data key="d0">4</data>
+</edge>
+<edge source="LIN" target="VER">
+  <data key="d0">2</data>
+</edge>
+<edge source="LIN" target="ANT">
+  <data key="d0">1</data>
+</edge>
+<edge source="LIN" target="BEA">
+  <data key="d0">1</data>
+</edge>
+<edge source="LIN" target="BOR">
+  <data key="d0">1</data>
+</edge>
+<edge source="COL" target="ALB">
+  <data key="d0">1</data>
+</edge>
+<edge source="COL" target="SAI">
+  <data key="d0">1</data>
+</edge>
+<edge source="COL" target="LAW">
+  <data key="d0">2</data>
+</edge>
+<edge source="COL" target="PER">
+  <data key="d0">1</data>
+</edge>
+<edge source="COL" target="ALO">
+  <data key="d0">1</data>
+</edge>
+<edge source="COL" target="STR">
+  <data key="d0">1</data>
+</edge>
+<edge source="HAM" target="RUS">
+  <data key="d0">1</data>
+</edge>
+<edge source="SAI" target="ALB">
+  <data key="d0">2</data>
+</edge>
+<edge source="SAI" target="PER">
+  <data key="d0">1</data>
+</edge>
+<edge source="SAI" target="GAS">
+  <data key="d0">1</data>
+</edge>
+<edge source="SAI" target="OCO">
+  <data key="d0">1</data>
+</edge>
+<edge source="SAI" target="LAW">
+  <data key="d0">1</data>
+</edge>
+<edge source="SAI" target="COL">
+  <data key="d0">1</data>
+</edge>
+<edge source="RUS" target="LEC">
+  <data key="d0">1</data>
+</edge>
+<edge source="RUS" target="HAM">
+  <data key="d0">1</data>
+</edge>
+<edge source="BOT" target="ALO">
+  <data key="d0">1</data>
+</edge>
+<edge source="BOT" target="COL">
+  <data key="d0">1</data>
+</edge>
+<edge source="BEA" target="NOR">
+  <data key="d0">3</data>
+</edge>
+<edge source="BEA" target="VER">
+  <data key="d0">1</data>
+</edge>
+<edge source="BEA" target="OCO">
+  <data key="d0">1</data>
+</edge>
+<edge source="BEA" target="GAS">
+  <data key="d0">1</data>
+</edge>
+<edge source="BEA" target="ANT">
+  <data key="d0">1</data>
+</edge>
+</graph></graphml>

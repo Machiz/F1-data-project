@@ -1,0 +1,1048 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"><key id="d0" for="edge" attr.name="weight" attr.type="long"/>
+<graph edgedefault="directed"><node id="NOR"/>
+<node id="VER"/>
+<node id="BOR"/>
+<node id="HAD"/>
+<node id="GAS"/>
+<node id="PER"/>
+<node id="ANT"/>
+<node id="ALO"/>
+<node id="LEC"/>
+<node id="STR"/>
+<node id="ALB"/>
+<node id="HUL"/>
+<node id="LAW"/>
+<node id="OCO"/>
+<node id="LIN"/>
+<node id="COL"/>
+<node id="HAM"/>
+<node id="SAI"/>
+<node id="RUS"/>
+<node id="BOT"/>
+<node id="PIA"/>
+<node id="BEA"/>
+<edge source="NOR" target="VER">
+  <data key="d0">4</data>
+</edge>
+<edge source="NOR" target="LIN">
+  <data key="d0">3</data>
+</edge>
+<edge source="NOR" target="BEA">
+  <data key="d0">2</data>
+</edge>
+<edge source="NOR" target="BOR">
+  <data key="d0">2</data>
+</edge>
+<edge source="NOR" target="ALB">
+  <data key="d0">1</data>
+</edge>
+<edge source="NOR" target="ANT">
+  <data key="d0">5</data>
+</edge>
+<edge source="NOR" target="GAS">
+  <data key="d0">1</data>
+</edge>
+<edge source="NOR" target="ALO">
+  <data key="d0">1</data>
+</edge>
+<edge source="NOR" target="BOT">
+  <data key="d0">1</data>
+</edge>
+<edge source="NOR" target="PER">
+  <data key="d0">1</data>
+</edge>
+<edge source="NOR" target="SAI">
+  <data key="d0">1</data>
+</edge>
+<edge source="NOR" target="OCO">
+  <data key="d0">1</data>
+</edge>
+<edge source="NOR" target="STR">
+  <data key="d0">1</data>
+</edge>
+<edge source="VER" target="LIN">
+  <data key="d0">2</data>
+</edge>
+<edge source="VER" target="ANT">
+  <data key="d0">3</data>
+</edge>
+<edge source="VER" target="NOR">
+  <data key="d0">3</data>
+</edge>
+<edge source="VER" target="ALO">
+  <data key="d0">1</data>
+</edge>
+<edge source="VER" target="PER">
+  <data key="d0">2</data>
+</edge>
+<edge source="VER" target="GAS">
+  <data key="d0">2</data>
+</edge>
+<edge source="VER" target="LAW">
+  <data key="d0">1</data>
+</edge>
+<edge source="VER" target="HAD">
+  <data key="d0">1</data>
+</edge>
+<edge source="VER" target="HUL">
+  <data key="d0">1</data>
+</edge>
+<edge source="VER" target="OCO">
+  <data key="d0">2</data>
+</edge>
+<edge source="VER" target="LEC">
+  <data key="d0">3</data>
+</edge>
+<edge source="VER" target="ALB">
+  <data key="d0">1</data>
+</edge>
+<edge source="VER" target="SAI">
+  <data key="d0">1</data>
+</edge>
+<edge source="VER" target="BEA">
+  <data key="d0">1</data>
+</edge>
+<edge source="VER" target="BOR">
+  <data key="d0">1</data>
+</edge>
+<edge source="VER" target="STR">
+  <data key="d0">1</data>
+</edge>
+<edge source="VER" target="BOT">
+  <data key="d0">2</data>
+</edge>
+<edge source="VER" target="PIA">
+  <data key="d0">2</data>
+</edge>
+<edge source="BOR" target="NOR">
+  <data key="d0">3</data>
+</edge>
+<edge source="BOR" target="VER">
+  <data key="d0">2</data>
+</edge>
+<edge source="BOR" target="OCO">
+  <data key="d0">6</data>
+</edge>
+<edge source="BOR" target="GAS">
+  <data key="d0">1</data>
+</edge>
+<edge source="BOR" target="HUL">
+  <data key="d0">2</data>
+</edge>
+<edge source="BOR" target="HAD">
+  <data key="d0">1</data>
+</edge>
+<edge source="BOR" target="BEA">
+  <data key="d0">3</data>
+</edge>
+<edge source="BOR" target="LAW">
+  <data key="d0">1</data>
+</edge>
+<edge source="BOR" target="PER">
+  <data key="d0">1</data>
+</edge>
+<edge source="BOR" target="HAM">
+  <data key="d0">3</data>
+</edge>
+<edge source="BOR" target="COL">
+  <data key="d0">1</data>
+</edge>
+<edge source="BOR" target="PIA">
+  <data key="d0">2</data>
+</edge>
+<edge source="BOR" target="ALB">
+  <data key="d0">2</data>
+</edge>
+<edge source="BOR" target="SAI">
+  <data key="d0">1</data>
+</edge>
+<edge source="BOR" target="ANT">
+  <data key="d0">1</data>
+</edge>
+<edge source="BOR" target="RUS">
+  <data key="d0">2</data>
+</edge>
+<edge source="BOR" target="LEC">
+  <data key="d0">2</data>
+</edge>
+<edge source="HAD" target="LIN">
+  <data key="d0">1</data>
+</edge>
+<edge source="HAD" target="VER">
+  <data key="d0">1</data>
+</edge>
+<edge source="HAD" target="OCO">
+  <data key="d0">1</data>
+</edge>
+<edge source="HAD" target="LAW">
+  <data key="d0">1</data>
+</edge>
+<edge source="HAD" target="BOR">
+  <data key="d0">1</data>
+</edge>
+<edge source="HAD" target="HUL">
+  <data key="d0">2</data>
+</edge>
+<edge source="HAD" target="ALB">
+  <data key="d0">1</data>
+</edge>
+<edge source="GAS" target="NOR">
+  <data key="d0">2</data>
+</edge>
+<edge source="GAS" target="VER">
+  <data key="d0">3</data>
+</edge>
+<edge source="GAS" target="OCO">
+  <data key="d0">3</data>
+</edge>
+<edge source="GAS" target="BEA">
+  <data key="d0">1</data>
+</edge>
+<edge source="GAS" target="BOR">
+  <data key="d0">2</data>
+</edge>
+<edge source="GAS" target="ALB">
+  <data key="d0">1</data>
+</edge>
+<edge source="GAS" target="SAI">
+  <data key="d0">1</data>
+</edge>
+<edge source="GAS" target="LIN">
+  <data key="d0">1</data>
+</edge>
+<edge source="GAS" target="HUL">
+  <data key="d0">2</data>
+</edge>
+<edge source="GAS" target="LEC">
+  <data key="d0">1</data>
+</edge>
+<edge source="PER" target="ALB">
+  <data key="d0">2</data>
+</edge>
+<edge source="PER" target="SAI">
+  <data key="d0">2</data>
+</edge>
+<edge source="PER" target="LAW">
+  <data key="d0">3</data>
+</edge>
+<edge source="PER" target="COL">
+  <data key="d0">3</data>
+</edge>
+<edge source="PER" target="VER">
+  <data key="d0">2</data>
+</edge>
+<edge source="PER" target="HAD">
+  <data key="d0">1</data>
+</edge>
+<edge source="PER" target="ALO">
+  <data key="d0">4</data>
+</edge>
+<edge source="PER" target="OCO">
+  <data key="d0">4</data>
+</edge>
+<edge source="PER" target="HUL">
+  <data key="d0">2</data>
+</edge>
+<edge source="PER" target="BEA">
+  <data key="d0">2</data>
+</edge>
+<edge source="PER" target="BOR">
+  <data key="d0">2</data>
+</edge>
+<edge source="PER" target="PIA">
+  <data key="d0">2</data>
+</edge>
+<edge source="PER" target="BOT">
+  <data key="d0">1</data>
+</edge>
+<edge source="PER" target="NOR">
+  <data key="d0">1</data>
+</edge>
+<edge source="PER" target="ANT">
+  <data key="d0">1</data>
+</edge>
+<edge source="PER" target="HAM">
+  <data key="d0">1</data>
+</edge>
+<edge source="PER" target="RUS">
+  <data key="d0">1</data>
+</edge>
+<edge source="PER" target="LEC">
+  <data key="d0">1</data>
+</edge>
+<edge source="PER" target="LIN">
+  <data key="d0">1</data>
+</edge>
+<edge source="ANT" target="BEA">
+  <data key="d0">2</data>
+</edge>
+<edge source="ANT" target="LEC">
+  <data key="d0">3</data>
+</edge>
+<edge source="ANT" target="NOR">
+  <data key="d0">3</data>
+</edge>
+<edge source="ANT" target="VER">
+  <data key="d0">3</data>
+</edge>
+<edge source="ANT" target="RUS">
+  <data key="d0">1</data>
+</edge>
+<edge source="ANT" target="ALB">
+  <data key="d0">1</data>
+</edge>
+<edge source="ANT" target="SAI">
+  <data key="d0">2</data>
+</edge>
+<edge source="ANT" target="HAM">
+  <data key="d0">1</data>
+</edge>
+<edge source="ANT" target="BOR">
+  <data key="d0">1</data>
+</edge>
+<edge source="ANT" target="ALO">
+  <data key="d0">1</data>
+</edge>
+<edge source="ANT" target="BOT">
+  <data key="d0">1</data>
+</edge>
+<edge source="ANT" target="PER">
+  <data key="d0">1</data>
+</edge>
+<edge source="ANT" target="LIN">
+  <data key="d0">1</data>
+</edge>
+<edge source="ANT" target="OCO">
+  <data key="d0">1</data>
+</edge>
+<edge source="ANT" target="STR">
+  <data key="d0">1</data>
+</edge>
+<edge source="ANT" target="PIA">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALO" target="BOT">
+  <data key="d0">2</data>
+</edge>
+<edge source="ALO" target="COL">
+  <data key="d0">2</data>
+</edge>
+<edge source="ALO" target="STR">
+  <data key="d0">4</data>
+</edge>
+<edge source="ALO" target="VER">
+  <data key="d0">3</data>
+</edge>
+<edge source="ALO" target="HUL">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALO" target="HAD">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALO" target="PER">
+  <data key="d0">5</data>
+</edge>
+<edge source="ALO" target="BEA">
+  <data key="d0">2</data>
+</edge>
+<edge source="ALO" target="LAW">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALO" target="OCO">
+  <data key="d0">2</data>
+</edge>
+<edge source="ALO" target="BOR">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALO" target="ALB">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALO" target="SAI">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALO" target="NOR">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALO" target="ANT">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALO" target="HAM">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALO" target="PIA">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALO" target="RUS">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALO" target="LEC">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALO" target="LIN">
+  <data key="d0">2</data>
+</edge>
+<edge source="LEC" target="RUS">
+  <data key="d0">6</data>
+</edge>
+<edge source="LEC" target="HAM">
+  <data key="d0">2</data>
+</edge>
+<edge source="LEC" target="OCO">
+  <data key="d0">3</data>
+</edge>
+<edge source="LEC" target="LIN">
+  <data key="d0">2</data>
+</edge>
+<edge source="LEC" target="ANT">
+  <data key="d0">3</data>
+</edge>
+<edge source="LEC" target="GAS">
+  <data key="d0">1</data>
+</edge>
+<edge source="LEC" target="VER">
+  <data key="d0">5</data>
+</edge>
+<edge source="LEC" target="ALB">
+  <data key="d0">2</data>
+</edge>
+<edge source="LEC" target="BOR">
+  <data key="d0">2</data>
+</edge>
+<edge source="LEC" target="ALO">
+  <data key="d0">1</data>
+</edge>
+<edge source="LEC" target="BOT">
+  <data key="d0">1</data>
+</edge>
+<edge source="LEC" target="PER">
+  <data key="d0">1</data>
+</edge>
+<edge source="LEC" target="SAI">
+  <data key="d0">1</data>
+</edge>
+<edge source="LEC" target="STR">
+  <data key="d0">1</data>
+</edge>
+<edge source="LEC" target="PIA">
+  <data key="d0">3</data>
+</edge>
+<edge source="LEC" target="BEA">
+  <data key="d0">1</data>
+</edge>
+<edge source="STR" target="BOT">
+  <data key="d0">2</data>
+</edge>
+<edge source="STR" target="ALO">
+  <data key="d0">4</data>
+</edge>
+<edge source="STR" target="COL">
+  <data key="d0">1</data>
+</edge>
+<edge source="STR" target="BEA">
+  <data key="d0">1</data>
+</edge>
+<edge source="STR" target="LAW">
+  <data key="d0">1</data>
+</edge>
+<edge source="STR" target="OCO">
+  <data key="d0">1</data>
+</edge>
+<edge source="STR" target="PER">
+  <data key="d0">1</data>
+</edge>
+<edge source="STR" target="NOR">
+  <data key="d0">1</data>
+</edge>
+<edge source="STR" target="HAM">
+  <data key="d0">1</data>
+</edge>
+<edge source="STR" target="LEC">
+  <data key="d0">1</data>
+</edge>
+<edge source="STR" target="PIA">
+  <data key="d0">1</data>
+</edge>
+<edge source="STR" target="ANT">
+  <data key="d0">1</data>
+</edge>
+<edge source="STR" target="RUS">
+  <data key="d0">1</data>
+</edge>
+<edge source="STR" target="VER">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALB" target="SAI">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALB" target="LAW">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALB" target="HUL">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALB" target="OCO">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALB" target="HAD">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALB" target="LIN">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALB" target="PER">
+  <data key="d0">2</data>
+</edge>
+<edge source="ALB" target="ALO">
+  <data key="d0">2</data>
+</edge>
+<edge source="ALB" target="HAM">
+  <data key="d0">2</data>
+</edge>
+<edge source="ALB" target="COL">
+  <data key="d0">2</data>
+</edge>
+<edge source="ALB" target="LEC">
+  <data key="d0">2</data>
+</edge>
+<edge source="ALB" target="RUS">
+  <data key="d0">2</data>
+</edge>
+<edge source="ALB" target="BOR">
+  <data key="d0">2</data>
+</edge>
+<edge source="ALB" target="BOT">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALB" target="NOR">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALB" target="ANT">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALB" target="PIA">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALB" target="VER">
+  <data key="d0">1</data>
+</edge>
+<edge source="ALB" target="BEA">
+  <data key="d0">2</data>
+</edge>
+<edge source="HUL" target="GAS">
+  <data key="d0">2</data>
+</edge>
+<edge source="HUL" target="VER">
+  <data key="d0">1</data>
+</edge>
+<edge source="HUL" target="LIN">
+  <data key="d0">2</data>
+</edge>
+<edge source="HUL" target="OCO">
+  <data key="d0">2</data>
+</edge>
+<edge source="HUL" target="PER">
+  <data key="d0">1</data>
+</edge>
+<edge source="HUL" target="LAW">
+  <data key="d0">1</data>
+</edge>
+<edge source="HUL" target="BOR">
+  <data key="d0">1</data>
+</edge>
+<edge source="HUL" target="HAD">
+  <data key="d0">1</data>
+</edge>
+<edge source="LAW" target="VER">
+  <data key="d0">2</data>
+</edge>
+<edge source="LAW" target="ALB">
+  <data key="d0">1</data>
+</edge>
+<edge source="LAW" target="SAI">
+  <data key="d0">1</data>
+</edge>
+<edge source="LAW" target="PER">
+  <data key="d0">3</data>
+</edge>
+<edge source="LAW" target="BOT">
+  <data key="d0">2</data>
+</edge>
+<edge source="LAW" target="OCO">
+  <data key="d0">2</data>
+</edge>
+<edge source="LAW" target="ALO">
+  <data key="d0">1</data>
+</edge>
+<edge source="LAW" target="HUL">
+  <data key="d0">2</data>
+</edge>
+<edge source="LAW" target="LIN">
+  <data key="d0">1</data>
+</edge>
+<edge source="LAW" target="BOR">
+  <data key="d0">1</data>
+</edge>
+<edge source="LAW" target="STR">
+  <data key="d0">1</data>
+</edge>
+<edge source="OCO" target="VER">
+  <data key="d0">3</data>
+</edge>
+<edge source="OCO" target="GAS">
+  <data key="d0">2</data>
+</edge>
+<edge source="OCO" target="BEA">
+  <data key="d0">2</data>
+</edge>
+<edge source="OCO" target="BOR">
+  <data key="d0">6</data>
+</edge>
+<edge source="OCO" target="ALB">
+  <data key="d0">3</data>
+</edge>
+<edge source="OCO" target="SAI">
+  <data key="d0">2</data>
+</edge>
+<edge source="OCO" target="LEC">
+  <data key="d0">3</data>
+</edge>
+<edge source="OCO" target="LIN">
+  <data key="d0">2</data>
+</edge>
+<edge source="OCO" target="PER">
+  <data key="d0">3</data>
+</edge>
+<edge source="OCO" target="HUL">
+  <data key="d0">2</data>
+</edge>
+<edge source="OCO" target="LAW">
+  <data key="d0">1</data>
+</edge>
+<edge source="OCO" target="HAM">
+  <data key="d0">2</data>
+</edge>
+<edge source="OCO" target="COL">
+  <data key="d0">1</data>
+</edge>
+<edge source="OCO" target="PIA">
+  <data key="d0">2</data>
+</edge>
+<edge source="OCO" target="ALO">
+  <data key="d0">1</data>
+</edge>
+<edge source="OCO" target="BOT">
+  <data key="d0">1</data>
+</edge>
+<edge source="OCO" target="NOR">
+  <data key="d0">1</data>
+</edge>
+<edge source="OCO" target="ANT">
+  <data key="d0">1</data>
+</edge>
+<edge source="OCO" target="RUS">
+  <data key="d0">2</data>
+</edge>
+<edge source="LIN" target="NOR">
+  <data key="d0">5</data>
+</edge>
+<edge source="LIN" target="VER">
+  <data key="d0">5</data>
+</edge>
+<edge source="LIN" target="ANT">
+  <data key="d0">2</data>
+</edge>
+<edge source="LIN" target="BEA">
+  <data key="d0">2</data>
+</edge>
+<edge source="LIN" target="BOR">
+  <data key="d0">3</data>
+</edge>
+<edge source="LIN" target="OCO">
+  <data key="d0">4</data>
+</edge>
+<edge source="LIN" target="LEC">
+  <data key="d0">2</data>
+</edge>
+<edge source="LIN" target="GAS">
+  <data key="d0">1</data>
+</edge>
+<edge source="LIN" target="HUL">
+  <data key="d0">4</data>
+</edge>
+<edge source="LIN" target="LAW">
+  <data key="d0">3</data>
+</edge>
+<edge source="LIN" target="HAD">
+  <data key="d0">2</data>
+</edge>
+<edge source="LIN" target="ALB">
+  <data key="d0">1</data>
+</edge>
+<edge source="LIN" target="HAM">
+  <data key="d0">2</data>
+</edge>
+<edge source="LIN" target="COL">
+  <data key="d0">2</data>
+</edge>
+<edge source="LIN" target="PIA">
+  <data key="d0">2</data>
+</edge>
+<edge source="LIN" target="ALO">
+  <data key="d0">2</data>
+</edge>
+<edge source="LIN" target="BOT">
+  <data key="d0">1</data>
+</edge>
+<edge source="LIN" target="RUS">
+  <data key="d0">1</data>
+</edge>
+<edge source="COL" target="ALB">
+  <data key="d0">3</data>
+</edge>
+<edge source="COL" target="SAI">
+  <data key="d0">4</data>
+</edge>
+<edge source="COL" target="LAW">
+  <data key="d0">2</data>
+</edge>
+<edge source="COL" target="PER">
+  <data key="d0">3</data>
+</edge>
+<edge source="COL" target="ALO">
+  <data key="d0">2</data>
+</edge>
+<edge source="COL" target="STR">
+  <data key="d0">2</data>
+</edge>
+<edge source="COL" target="BEA">
+  <data key="d0">1</data>
+</edge>
+<edge source="COL" target="BOR">
+  <data key="d0">2</data>
+</edge>
+<edge source="COL" target="OCO">
+  <data key="d0">2</data>
+</edge>
+<edge source="COL" target="LIN">
+  <data key="d0">2</data>
+</edge>
+<edge source="COL" target="BOT">
+  <data key="d0">1</data>
+</edge>
+<edge source="COL" target="NOR">
+  <data key="d0">1</data>
+</edge>
+<edge source="COL" target="HAM">
+  <data key="d0">2</data>
+</edge>
+<edge source="COL" target="ANT">
+  <data key="d0">1</data>
+</edge>
+<edge source="COL" target="PIA">
+  <data key="d0">2</data>
+</edge>
+<edge source="COL" target="RUS">
+  <data key="d0">1</data>
+</edge>
+<edge source="COL" target="LEC">
+  <data key="d0">3</data>
+</edge>
+<edge source="COL" target="VER">
+  <data key="d0">1</data>
+</edge>
+<edge source="HAM" target="RUS">
+  <data key="d0">2</data>
+</edge>
+<edge source="HAM" target="PIA">
+  <data key="d0">3</data>
+</edge>
+<edge source="HAM" target="ALB">
+  <data key="d0">2</data>
+</edge>
+<edge source="HAM" target="SAI">
+  <data key="d0">2</data>
+</edge>
+<edge source="HAM" target="BEA">
+  <data key="d0">1</data>
+</edge>
+<edge source="HAM" target="BOR">
+  <data key="d0">3</data>
+</edge>
+<edge source="HAM" target="OCO">
+  <data key="d0">3</data>
+</edge>
+<edge source="HAM" target="LIN">
+  <data key="d0">2</data>
+</edge>
+<edge source="HAM" target="ALO">
+  <data key="d0">1</data>
+</edge>
+<edge source="HAM" target="BOT">
+  <data key="d0">1</data>
+</edge>
+<edge source="HAM" target="PER">
+  <data key="d0">1</data>
+</edge>
+<edge source="HAM" target="STR">
+  <data key="d0">1</data>
+</edge>
+<edge source="HAM" target="NOR">
+  <data key="d0">1</data>
+</edge>
+<edge source="HAM" target="ANT">
+  <data key="d0">1</data>
+</edge>
+<edge source="HAM" target="VER">
+  <data key="d0">1</data>
+</edge>
+<edge source="HAM" target="LEC">
+  <data key="d0">1</data>
+</edge>
+<edge source="SAI" target="ALB">
+  <data key="d0">2</data>
+</edge>
+<edge source="SAI" target="PER">
+  <data key="d0">2</data>
+</edge>
+<edge source="SAI" target="GAS">
+  <data key="d0">1</data>
+</edge>
+<edge source="SAI" target="OCO">
+  <data key="d0">1</data>
+</edge>
+<edge source="SAI" target="LAW">
+  <data key="d0">1</data>
+</edge>
+<edge source="SAI" target="COL">
+  <data key="d0">4</data>
+</edge>
+<edge source="SAI" target="BEA">
+  <data key="d0">1</data>
+</edge>
+<edge source="SAI" target="HAM">
+  <data key="d0">3</data>
+</edge>
+<edge source="SAI" target="ANT">
+  <data key="d0">2</data>
+</edge>
+<edge source="SAI" target="BOR">
+  <data key="d0">1</data>
+</edge>
+<edge source="SAI" target="ALO">
+  <data key="d0">1</data>
+</edge>
+<edge source="SAI" target="BOT">
+  <data key="d0">1</data>
+</edge>
+<edge source="SAI" target="NOR">
+  <data key="d0">1</data>
+</edge>
+<edge source="SAI" target="PIA">
+  <data key="d0">1</data>
+</edge>
+<edge source="SAI" target="RUS">
+  <data key="d0">1</data>
+</edge>
+<edge source="SAI" target="VER">
+  <data key="d0">1</data>
+</edge>
+<edge source="SAI" target="LEC">
+  <data key="d0">1</data>
+</edge>
+<edge source="RUS" target="LEC">
+  <data key="d0">4</data>
+</edge>
+<edge source="RUS" target="HAM">
+  <data key="d0">1</data>
+</edge>
+<edge source="RUS" target="VER">
+  <data key="d0">1</data>
+</edge>
+<edge source="RUS" target="ALB">
+  <data key="d0">2</data>
+</edge>
+<edge source="RUS" target="BOR">
+  <data key="d0">2</data>
+</edge>
+<edge source="RUS" target="ALO">
+  <data key="d0">1</data>
+</edge>
+<edge source="RUS" target="BOT">
+  <data key="d0">1</data>
+</edge>
+<edge source="RUS" target="PER">
+  <data key="d0">1</data>
+</edge>
+<edge source="RUS" target="SAI">
+  <data key="d0">1</data>
+</edge>
+<edge source="RUS" target="LIN">
+  <data key="d0">1</data>
+</edge>
+<edge source="RUS" target="OCO">
+  <data key="d0">2</data>
+</edge>
+<edge source="RUS" target="STR">
+  <data key="d0">1</data>
+</edge>
+<edge source="RUS" target="NOR">
+  <data key="d0">1</data>
+</edge>
+<edge source="RUS" target="PIA">
+  <data key="d0">2</data>
+</edge>
+<edge source="RUS" target="ANT">
+  <data key="d0">1</data>
+</edge>
+<edge source="BOT" target="ALO">
+  <data key="d0">2</data>
+</edge>
+<edge source="BOT" target="COL">
+  <data key="d0">2</data>
+</edge>
+<edge source="BOT" target="BEA">
+  <data key="d0">2</data>
+</edge>
+<edge source="BOT" target="LAW">
+  <data key="d0">1</data>
+</edge>
+<edge source="BOT" target="OCO">
+  <data key="d0">1</data>
+</edge>
+<edge source="BOT" target="STR">
+  <data key="d0">2</data>
+</edge>
+<edge source="BOT" target="PER">
+  <data key="d0">2</data>
+</edge>
+<edge source="BOT" target="VER">
+  <data key="d0">2</data>
+</edge>
+<edge source="BOT" target="ALB">
+  <data key="d0">1</data>
+</edge>
+<edge source="BOT" target="SAI">
+  <data key="d0">1</data>
+</edge>
+<edge source="BOT" target="NOR">
+  <data key="d0">1</data>
+</edge>
+<edge source="BOT" target="ANT">
+  <data key="d0">1</data>
+</edge>
+<edge source="BOT" target="HAM">
+  <data key="d0">1</data>
+</edge>
+<edge source="BOT" target="PIA">
+  <data key="d0">1</data>
+</edge>
+<edge source="BOT" target="RUS">
+  <data key="d0">1</data>
+</edge>
+<edge source="BOT" target="LEC">
+  <data key="d0">1</data>
+</edge>
+<edge source="BOT" target="LIN">
+  <data key="d0">1</data>
+</edge>
+<edge source="PIA" target="HAM">
+  <data key="d0">3</data>
+</edge>
+<edge source="PIA" target="ALB">
+  <data key="d0">2</data>
+</edge>
+<edge source="PIA" target="SAI">
+  <data key="d0">1</data>
+</edge>
+<edge source="PIA" target="BEA">
+  <data key="d0">1</data>
+</edge>
+<edge source="PIA" target="BOR">
+  <data key="d0">2</data>
+</edge>
+<edge source="PIA" target="OCO">
+  <data key="d0">2</data>
+</edge>
+<edge source="PIA" target="LIN">
+  <data key="d0">2</data>
+</edge>
+<edge source="PIA" target="PER">
+  <data key="d0">2</data>
+</edge>
+<edge source="PIA" target="ALO">
+  <data key="d0">1</data>
+</edge>
+<edge source="PIA" target="BOT">
+  <data key="d0">1</data>
+</edge>
+<edge source="PIA" target="STR">
+  <data key="d0">1</data>
+</edge>
+<edge source="PIA" target="VER">
+  <data key="d0">2</data>
+</edge>
+<edge source="PIA" target="LEC">
+  <data key="d0">3</data>
+</edge>
+<edge source="PIA" target="ANT">
+  <data key="d0">2</data>
+</edge>
+<edge source="PIA" target="COL">
+  <data key="d0">1</data>
+</edge>
+<edge source="PIA" target="RUS">
+  <data key="d0">1</data>
+</edge>
+<edge source="BEA" target="NOR">
+  <data key="d0">4</data>
+</edge>
+<edge source="BEA" target="VER">
+  <data key="d0">2</data>
+</edge>
+<edge source="BEA" target="OCO">
+  <data key="d0">1</data>
+</edge>
+<edge source="BEA" target="GAS">
+  <data key="d0">1</data>
+</edge>
+<edge source="BEA" target="ANT">
+  <data key="d0">3</data>
+</edge>
+<edge source="BEA" target="SAI">
+  <data key="d0">2</data>
+</edge>
+<edge source="BEA" target="HAM">
+  <data key="d0">2</data>
+</edge>
+<edge source="BEA" target="BOR">
+  <data key="d0">2</data>
+</edge>
+<edge source="BEA" target="ALO">
+  <data key="d0">1</data>
+</edge>
+<edge source="BEA" target="BOT">
+  <data key="d0">1</data>
+</edge>
+<edge source="BEA" target="PER">
+  <data key="d0">1</data>
+</edge>
+<edge source="BEA" target="PIA">
+  <data key="d0">1</data>
+</edge>
+<edge source="BEA" target="RUS">
+  <data key="d0">1</data>
+</edge>
+<edge source="BEA" target="LEC">
+  <data key="d0">1</data>
+</edge>
+<edge source="BEA" target="COL">
+  <data key="d0">1</data>
+</edge>
+<edge source="BEA" target="ALB">
+  <data key="d0">2</data>
+</edge>
+<edge source="BEA" target="LIN">
+  <data key="d0">1</data>
+</edge>
+</graph></graphml>
