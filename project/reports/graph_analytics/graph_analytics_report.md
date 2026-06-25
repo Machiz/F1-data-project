@@ -77,33 +77,58 @@ El análisis consolidado de todas las carreras de la temporada (Australia, China
 
 ---
 
-## 4. Sección Comparativa: PageRank vs. Popularidad y Modelos
+## 4. Sección Comparativa: PageRank vs. Baselines Externos (Posición de Carrera) y Modelos
 
-### Tabla Comparativa: Dominancia (PageRank) vs. Popularidad (Adelantamientos Totales)
+Para validar la utilidad del ranking estructural del grafo de adelantamientos, es fundamental contrastar los resultados de centralidad frente a **baselines externos estructurados** y no solo contra métricas internas del grafo (como el volumen de adelantamientos/popularidad).
 
-| Piloto | Adelantamientos (Ofensiva) | Rank Popularidad | PageRank (Dominancia) | Rank PageRank | Diferencia de Rank |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **VER** | 46 | 1 | 0.073675 | 1 | 0 |
-| **OCO** | 45 | 2 | 0.073232 | 2 | 0 |
-| **BOR** | 37 | 3 | 0.061600 | 3 | 0 |
-| **LEC** | 33 | 4 | 0.055386 | 4 | 0 |
-| **PER** | 33 | 4 | 0.055219 | 5 | -1 |
-| **ANT** | 30 | 7 | 0.051754 | 6 | +1 |
-| **LIN** | 28 | 9 | 0.051256 | 7 | +2 |
-| **ALB** | 31 | 6 | 0.051175 | 8 | -2 |
-| **NOR** | 30 | 7 | 0.050327 | 9 | -2 |
-| **BEA** | 27 | 10 | 0.045920 | 10 | 0 |
+### A. Comparación Estructurada: PageRank vs. Posición Real de Llegada (GP de Australia 2026)
 
-### Análisis de Diferencias y Comparación con Modelos
+El siguiente análisis contrasta el orden de dominancia por PageRank frente a la posición de llegada real en la carrera de Australia 2026:
 
-1.  **PageRank vs. Popularidad (Adelantamientos Hechos):**
-    *   **Max Verstappen (VER)** y **Esteban Ocon (OCO)** lideran tanto en adelantamientos totales como en PageRank. Sin embargo, aunque Ocon realizó casi la misma cantidad de adelantamientos (45 vs 46), Verstappen mantiene la primera posición en PageRank. Esto ocurre porque los adelantamientos de Verstappen fueron de "mayor calidad" (hechos a pilotos competitivos en la parte alta), mientras que Ocon opera en el denso pelotón medio, donde la dominancia se diluye rápidamente debido a la alta tasa de adelantamientos recíprocos.
-    *   **LIN** sube +2 posiciones en PageRank a pesar de tener solo 28 adelantamientos (9º en popularidad). Esto demuestra que sus pocos adelantamientos fueron sobre pilotos de alto nivel y con buena retención de posición.
-    *   **ALB** y **NOR** caen -2 posiciones en PageRank a pesar de tener 31 y 30 adelantamientos respectivamente. Esto indica que un porcentaje significativo de sus adelantamientos fue sobre pilotos del fondo de la parrilla (bajo PageRank), aportando menos prestigio a su puntuación acumulada.
+| Piloto | PageRank | Rank PageRank | Posición Llegada (Real) | Diferencia (Posición - PageRank) | Interpretación y Dinámica Deportiva |
+| :--- | :---: | :---: | :---: | :---: | :--- |
+| **NOR** | 0.084273 | 1 | 6 | +5 | **Combate en Tráfico:** Norris remontó con 11 adelantamientos y solo 8 sufridos, obteniendo la mayor dominancia en pista a pesar de no ganar la carrera. |
+| **BEA** | 0.071950 | 2 | 7 | +5 | **Zona Media Activa:** Mucha combatividad con pilotos competitivos en el pelotón medio alto. |
+| **SAI** | 0.069561 | 3 | 15 | +12 | **Alta Actividad, Baja Eficiencia:** Sainz luchó constantemente en pista pero cayó al 15º final, demostrando que PageRank mide batallas y no el resultado final. |
+| **VER** | 0.067503 | 4 | 5 | +1 | Relación lineal estrecha entre su ritmo de carrera y su actividad de adelantamientos. |
+| **ALB** | 0.066953 | 5 | 13 | +8 | Batalló agresivamente en el tráfico, aunque su coche no le permitió terminar en los puntos. |
+| **RUS** | 0.066748 | 6 | 1 | -5 | **Ganador en Aire Limpio:** Russell ganó la carrera liderando desde adelante. Al no estar en tráfico, tuvo muy pocos duelos y su PageRank es bajo en comparación. |
+| **LAW** | 0.065385 | 7 | 12 | +5 | Batalló bastante en tráfico en el fondo de los puntos. |
+| **COL** | 0.055738 | 8 | 14 | +6 | Muy activo en la zona media defensiva, actuando de tapón y acumulando interacciones. |
+| **HAM** | 0.051414 | 9 | 2 | -7 | **Podio Aislado:** Poca interacción de adelantamientos con el pelotón de en medio. |
+| **LIN** | 0.044745 | 10 | 9 | -1 | Mantiene una buena correlación entre su ritmo real y su combatividad. |
+| **OCO** | 0.042931 | 11 | 11 | 0 | Relación directa entre adelantamientos hechos/sufridos y su posición final. |
+| **BOT** | 0.041670 | 12 | 19 | +7 | Tuvo algunas luchas en el fondo antes de retirarse. |
+| **ANT** | 0.039800 | 13 | 4 | -9 | Corrió usualmente al frente, por lo que su PageRank es menor que su consistencia. |
+| **GAS** | 0.039322 | 14 | 10 | -4 | Se mantuvo en el fondo de los puntos con interacciones limitadas. |
+| **ALO** | 0.038619 | 15 | 18 | +3 | Luchó brevemente en la zona media antes de su retiro. |
+| **BOR** | 0.037442 | 16 | 8 | -8 | Poca combatividad ofensiva a pesar de rescatar un buen 8º puesto. |
+| **LEC** | 0.036080 | 17 | 3 | -14 | **Aislamiento en el Frente:** Leclerc terminó en el podio (3º), pero al estar aislado en el Grupo 3 casi no adelantó ni fue adelantado, hundiéndose en PageRank. |
 
-2.  **Comparación con Modelos Predictivos / Rendimiento Físico:**
-    *   En modelos basados en ritmo físico (como la tasa de degradación de neumáticos a 3 vueltas `deg_rate_3lap` o ritmo puro de carrera), pilotos como **Leclerc** o **Norris** suelen liderar debido al rendimiento inherente del coche. 
-    *   Sin embargo, el **Grafo de Adelantamientos** califica una dimensión distinta: la **eficacia en carrera y el combate directo**. Un piloto en un monoplaza rápido que sale en pole y se escapa (ej. Leclerc cuando domina un GP) tendrá muy pocos adelantamientos en pista, por lo que su PageRank en esa carrera será bajo, a pesar de que los modelos predictivos de ritmo lo califiquen como el más rápido. El PageRank, por ende, es una métrica de combatividad y dominancia táctica en tráfico, mientras que los modelos de ritmo miden eficiencia de ingeniería pura.
+### B. Comparación Consolidad Temporada: PageRank Global vs. Posición Promedio en Carrera
+
+Al consolidar los datos de toda la temporada (Australia, China, Japón y Estados Unidos), el PageRank acumulado se contrasta contra el rango promedio de finalización en carrera de cada piloto:
+
+| Piloto | PageRank Global | Rank PageRank | Rango Promedio Carrera | Rank Promedio Carrera | Diferencia de Rank | Dinámica de la Temporada |
+| :--- | :---: | :---: | :---: | :---: | :---: | :--- |
+| **VER** | 0.073675 | 1 | 6.67 | 7 | +6 | **El Gran Remontador:** Verstappen estuvo muy activo en duelos directos, superando su consistencia en el resultado final. |
+| **OCO** | 0.073232 | 2 | 8.67 | 11 | +9 | **Rey de la Zona Media:** Ocon lideró la actividad del midfield, con un PageRank inflado por la cantidad y calidad de sus rivales. |
+| **BOR** | 0.061600 | 3 | 9.00 | 12 | +9 | Muy involucrado en batallas de la zona media-baja. |
+| **LEC** | 0.055386 | 4 | 2.33 | 4 | 0 | Leclerc mantiene una correlación perfecta entre su velocidad final y su combatividad. |
+| **PER** | 0.055219 | 5 | 12.33 | 15 | +10 | Pérez batalló a menudo en tráfico debido a malas clasificaciones, subiendo su PageRank. |
+| **ANT** | 0.051754 | 6 | 2.00 | 2 | -4 | Antonelli rodó usualmente al frente, por lo que su PageRank es menor que su consistencia en carrera. |
+| **LIN** | 0.051256 | 7 | 9.00 | 13 | +6 | Mantiene combatividad en el fondo de los puntos. |
+| **ALB** | 0.051175 | 8 | 13.50 | 16 | +8 | Frecuentemente atrapado en tráfico, batallando en el midfield. |
+| **NOR** | 0.050327 | 9 | 4.50 | 5 | -4 | Norris suele clasificar bien, lo que limita su volumen de adelantamientos en tráfico. |
+| **BEA** | 0.045920 | 10 | 7.00 | 9 | -1 | Buena combatividad en el midfield superior. |
+| **HAM** | 0.044105 | 13 | 2.00 | 3 | -10 | Hamilton rodó al frente del pelotón, teniendo pocas interacciones en el núcleo de combate. |
+| **RUS** | 0.040306 | 15 | 1.00 | 1 | -14 | **Líder Consistente:** Russell lideró el campeonato promediando el 1er puesto, pero al no batallar en tráfico, su PageRank estructural es muy bajo. |
+
+### C. Comparación con Modelos Predictivos y Rendimiento Físico
+
+1.  **Modelos de Ritmo Físico vs. Grafo de Adelantamientos:**
+    *   En modelos basados en ritmo físico (como la tasa de degradación de neumáticos a 3 vueltas `deg_rate_3lap` o ritmo puro de carrera en aire limpio), pilotos como **Russell**, **Leclerc** o **Hamilton** suelen liderar debido a la eficiencia aerodinámica e ingeniería de sus monoplazas. 
+    *   Sin embargo, el **Grafo de Adelantamientos** califica una dimensión distinta: la **combatividad y la dominancia táctica en tráfico**. Un piloto en un coche rápido que sale en la pole y se escapa (ej. Russell) tendrá un ritmo físico impecable pero un PageRank bajo en esa carrera. En cambio, un piloto que califica mal y remonta (ej. Norris o Verstappen) acumulará una transferencia masiva de prestigio en el grafo. Así, los modelos físicos predicen velocidad pura, mientras que el PageRank mapea la eficacia en combate directo rueda a rueda.
 
 ---
 
