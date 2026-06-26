@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"><key id="d2" for="edge" attr.name="laps_in_drs" attr.type="long"/>
+<key id="d1" for="edge" attr.name="distance" attr.type="float"/>
+<key id="d0" for="edge" attr.name="weight" attr.type="float"/>
+<graph edgedefault="undirected"><node id="NOR"/>
+<node id="VER"/>
+<node id="BOR"/>
+<node id="HAD"/>
+<node id="GAS"/>
+<node id="PER"/>
+<node id="ANT"/>
+<node id="ALO"/>
+<node id="LEC"/>
+<node id="STR"/>
+<node id="ALB"/>
+<node id="HUL"/>
+<node id="LAW"/>
+<node id="OCO"/>
+<node id="LIN"/>
+<node id="COL"/>
+<node id="HAM"/>
+<node id="SAI"/>
+<node id="RUS"/>
+<node id="BOT"/>
+<node id="PIA"/>
+<node id="BEA"/>
+<edge source="VER" target="HUL">
+  <data key="d0">0.05357142857142857</data>
+  <data key="d1">18.666666666666668</data>
+  <data key="d2">3</data>
+</edge>
+<edge source="VER" target="LAW">
+  <data key="d0">0.03571428571428571</data>
+  <data key="d1">28.0</data>
+  <data key="d2">2</data>
+</edge>
+<edge source="VER" target="OCO">
+  <data key="d0">0.125</data>
+  <data key="d1">8.0</data>
+  <data key="d2">7</data>
+</edge>
+<edge source="HAD" target="LIN">
+  <data key="d0">0.017857142857142856</data>
+  <data key="d1">56.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="HAD" target="OCO">
+  <data key="d0">0.017857142857142856</data>
+  <data key="d1">56.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="HAD" target="HUL">
+  <data key="d0">0.017857142857142856</data>
+  <data key="d1">56.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="GAS" target="LAW">
+  <data key="d0">0.017857142857142856</data>
+  <data key="d1">56.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="GAS" target="HUL">
+  <data key="d0">0.08928571428571429</data>
+  <data key="d1">11.2</data>
+  <data key="d2">5</data>
+</edge>
+<edge source="GAS" target="LIN">
+  <data key="d0">0.017857142857142856</data>
+  <data key="d1">56.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="ANT" target="LEC">
+  <data key="d0">0.32142857142857145</data>
+  <data key="d1">3.1111111111111107</data>
+  <data key="d2">18</data>
+</edge>
+<edge source="ANT" target="OCO">
+  <data key="d0">0.07142857142857142</data>
+  <data key="d1">14.0</data>
+  <data key="d2">4</data>
+</edge>
+<edge source="ALO" target="HUL">
+  <data key="d0">0.017857142857142856</data>
+  <data key="d1">56.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="ALO" target="STR">
+  <data key="d0">0.017857142857142856</data>
+  <data key="d1">56.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="ALO" target="LAW">
+  <data key="d0">0.017857142857142856</data>
+  <data key="d1">56.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="LEC" target="HUL">
+  <data key="d0">0.03571428571428571</data>
+  <data key="d1">28.0</data>
+  <data key="d2">2</data>
+</edge>
+<edge source="LEC" target="LIN">
+  <data key="d0">0.03571428571428571</data>
+  <data key="d1">28.0</data>
+  <data key="d2">2</data>
+</edge>
+<edge source="LEC" target="OCO">
+  <data key="d0">0.125</data>
+  <data key="d1">8.0</data>
+  <data key="d2">7</data>
+</edge>
+<edge source="STR" target="HUL">
+  <data key="d0">0.03571428571428571</data>
+  <data key="d1">28.0</data>
+  <data key="d2">2</data>
+</edge>
+<edge source="HUL" target="LIN">
+  <data key="d0">0.08928571428571429</data>
+  <data key="d1">11.2</data>
+  <data key="d2">5</data>
+</edge>
+<edge source="HUL" target="LAW">
+  <data key="d0">0.07142857142857142</data>
+  <data key="d1">14.0</data>
+  <data key="d2">4</data>
+</edge>
+<edge source="HUL" target="OCO">
+  <data key="d0">0.03571428571428571</data>
+  <data key="d1">28.0</data>
+  <data key="d2">2</data>
+</edge>
+<edge source="LAW" target="LIN">
+  <data key="d0">0.125</data>
+  <data key="d1">8.0</data>
+  <data key="d2">7</data>
+</edge>
+<edge source="LAW" target="OCO">
+  <data key="d0">0.07142857142857142</data>
+  <data key="d1">14.0</data>
+  <data key="d2">4</data>
+</edge>
+<edge source="OCO" target="LIN">
+  <data key="d0">0.07142857142857142</data>
+  <data key="d1">14.0</data>
+  <data key="d2">4</data>
+</edge>
+</graph></graphml>

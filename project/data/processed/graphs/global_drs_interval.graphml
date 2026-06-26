@@ -1,0 +1,637 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"><key id="d2" for="edge" attr.name="laps_in_drs" attr.type="long"/>
+<key id="d1" for="edge" attr.name="distance" attr.type="float"/>
+<key id="d0" for="edge" attr.name="weight" attr.type="float"/>
+<graph edgedefault="undirected"><node id="RUS"/>
+<node id="OCO"/>
+<node id="STR"/>
+<node id="PIA"/>
+<node id="NOR"/>
+<node id="ANT"/>
+<node id="BEA"/>
+<node id="GAS"/>
+<node id="SAI"/>
+<node id="BOR"/>
+<node id="HAD"/>
+<node id="ALO"/>
+<node id="PER"/>
+<node id="COL"/>
+<node id="LEC"/>
+<node id="ALB"/>
+<node id="HUL"/>
+<node id="HAM"/>
+<node id="LAW"/>
+<node id="VER"/>
+<node id="BOT"/>
+<node id="LIN"/>
+<edge source="RUS" target="LEC">
+  <data key="d0">0.11764705882352941</data>
+  <data key="d1">8.5</data>
+  <data key="d2">20</data>
+</edge>
+<edge source="RUS" target="HAM">
+  <data key="d0">0.052941176470588235</data>
+  <data key="d1">18.88888888888889</data>
+  <data key="d2">9</data>
+</edge>
+<edge source="RUS" target="ANT">
+  <data key="d0">0.011764705882352941</data>
+  <data key="d1">85.0</data>
+  <data key="d2">2</data>
+</edge>
+<edge source="RUS" target="NOR">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="RUS" target="STR">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="RUS" target="VER">
+  <data key="d0">0.023529411764705882</data>
+  <data key="d1">42.5</data>
+  <data key="d2">4</data>
+</edge>
+<edge source="RUS" target="PIA">
+  <data key="d0">0.029411764705882353</data>
+  <data key="d1">34.0</data>
+  <data key="d2">5</data>
+</edge>
+<edge source="RUS" target="BEA">
+  <data key="d0">0.011764705882352941</data>
+  <data key="d1">85.0</data>
+  <data key="d2">2</data>
+</edge>
+<edge source="RUS" target="BOR">
+  <data key="d0">0.011764705882352941</data>
+  <data key="d1">85.0</data>
+  <data key="d2">2</data>
+</edge>
+<edge source="OCO" target="BEA">
+  <data key="d0">0.03529411764705882</data>
+  <data key="d1">28.333333333333332</data>
+  <data key="d2">6</data>
+</edge>
+<edge source="OCO" target="NOR">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="OCO" target="LAW">
+  <data key="d0">0.08823529411764706</data>
+  <data key="d1">11.333333333333332</data>
+  <data key="d2">15</data>
+</edge>
+<edge source="OCO" target="GAS">
+  <data key="d0">0.12941176470588237</data>
+  <data key="d1">7.727272727272727</data>
+  <data key="d2">22</data>
+</edge>
+<edge source="OCO" target="SAI">
+  <data key="d0">0.023529411764705882</data>
+  <data key="d1">42.5</data>
+  <data key="d2">4</data>
+</edge>
+<edge source="OCO" target="LIN">
+  <data key="d0">0.029411764705882353</data>
+  <data key="d1">34.0</data>
+  <data key="d2">5</data>
+</edge>
+<edge source="OCO" target="ANT">
+  <data key="d0">0.023529411764705882</data>
+  <data key="d1">42.5</data>
+  <data key="d2">4</data>
+</edge>
+<edge source="OCO" target="LEC">
+  <data key="d0">0.041176470588235294</data>
+  <data key="d1">24.285714285714285</data>
+  <data key="d2">7</data>
+</edge>
+<edge source="OCO" target="VER">
+  <data key="d0">0.041176470588235294</data>
+  <data key="d1">24.285714285714285</data>
+  <data key="d2">7</data>
+</edge>
+<edge source="OCO" target="HUL">
+  <data key="d0">0.011764705882352941</data>
+  <data key="d1">85.0</data>
+  <data key="d2">2</data>
+</edge>
+<edge source="OCO" target="HAD">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="OCO" target="BOR">
+  <data key="d0">0.03529411764705882</data>
+  <data key="d1">28.333333333333332</data>
+  <data key="d2">6</data>
+</edge>
+<edge source="OCO" target="PER">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="OCO" target="STR">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="OCO" target="BOT">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="OCO" target="HAM">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="STR" target="PER">
+  <data key="d0">0.01764705882352941</data>
+  <data key="d1">56.666666666666664</data>
+  <data key="d2">3</data>
+</edge>
+<edge source="STR" target="BOT">
+  <data key="d0">0.023529411764705882</data>
+  <data key="d1">42.5</data>
+  <data key="d2">4</data>
+</edge>
+<edge source="STR" target="ALO">
+  <data key="d0">0.029411764705882353</data>
+  <data key="d1">34.0</data>
+  <data key="d2">5</data>
+</edge>
+<edge source="STR" target="HUL">
+  <data key="d0">0.011764705882352941</data>
+  <data key="d1">85.0</data>
+  <data key="d2">2</data>
+</edge>
+<edge source="STR" target="HAD">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="STR" target="BOR">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="STR" target="LIN">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="STR" target="COL">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="STR" target="ANT">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="STR" target="VER">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="PIA" target="HAM">
+  <data key="d0">0.03529411764705882</data>
+  <data key="d1">28.333333333333332</data>
+  <data key="d2">6</data>
+</edge>
+<edge source="PIA" target="LEC">
+  <data key="d0">0.01764705882352941</data>
+  <data key="d1">56.666666666666664</data>
+  <data key="d2">3</data>
+</edge>
+<edge source="PIA" target="VER">
+  <data key="d0">0.023529411764705882</data>
+  <data key="d1">42.5</data>
+  <data key="d2">4</data>
+</edge>
+<edge source="PIA" target="ANT">
+  <data key="d0">0.029411764705882353</data>
+  <data key="d1">34.0</data>
+  <data key="d2">5</data>
+</edge>
+<edge source="PIA" target="NOR">
+  <data key="d0">0.01764705882352941</data>
+  <data key="d1">56.666666666666664</data>
+  <data key="d2">3</data>
+</edge>
+<edge source="NOR" target="LAW">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="NOR" target="LIN">
+  <data key="d0">0.029411764705882353</data>
+  <data key="d1">34.0</data>
+  <data key="d2">5</data>
+</edge>
+<edge source="NOR" target="BEA">
+  <data key="d0">0.029411764705882353</data>
+  <data key="d1">34.0</data>
+  <data key="d2">5</data>
+</edge>
+<edge source="NOR" target="VER">
+  <data key="d0">0.052941176470588235</data>
+  <data key="d1">18.88888888888889</data>
+  <data key="d2">9</data>
+</edge>
+<edge source="NOR" target="HAD">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="NOR" target="GAS">
+  <data key="d0">0.023529411764705882</data>
+  <data key="d1">42.5</data>
+  <data key="d2">4</data>
+</edge>
+<edge source="NOR" target="ALB">
+  <data key="d0">0.01764705882352941</data>
+  <data key="d1">56.666666666666664</data>
+  <data key="d2">3</data>
+</edge>
+<edge source="NOR" target="ANT">
+  <data key="d0">0.052941176470588235</data>
+  <data key="d1">18.88888888888889</data>
+  <data key="d2">9</data>
+</edge>
+<edge source="NOR" target="LEC">
+  <data key="d0">0.023529411764705882</data>
+  <data key="d1">42.5</data>
+  <data key="d2">4</data>
+</edge>
+<edge source="NOR" target="ALO">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="NOR" target="PER">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="ANT" target="HAM">
+  <data key="d0">0.023529411764705882</data>
+  <data key="d1">42.5</data>
+  <data key="d2">4</data>
+</edge>
+<edge source="ANT" target="HAD">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="ANT" target="VER">
+  <data key="d0">0.1</data>
+  <data key="d1">10.0</data>
+  <data key="d2">17</data>
+</edge>
+<edge source="ANT" target="LEC">
+  <data key="d0">0.12352941176470589</data>
+  <data key="d1">8.095238095238095</data>
+  <data key="d2">21</data>
+</edge>
+<edge source="ANT" target="BOR">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="ANT" target="BEA">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="BEA" target="GAS">
+  <data key="d0">0.023529411764705882</data>
+  <data key="d1">42.5</data>
+  <data key="d2">4</data>
+</edge>
+<edge source="BEA" target="VER">
+  <data key="d0">0.058823529411764705</data>
+  <data key="d1">17.0</data>
+  <data key="d2">10</data>
+</edge>
+<edge source="BEA" target="BOR">
+  <data key="d0">0.052941176470588235</data>
+  <data key="d1">18.88888888888889</data>
+  <data key="d2">9</data>
+</edge>
+<edge source="BEA" target="ALB">
+  <data key="d0">0.041176470588235294</data>
+  <data key="d1">24.285714285714285</data>
+  <data key="d2">7</data>
+</edge>
+<edge source="BEA" target="SAI">
+  <data key="d0">0.029411764705882353</data>
+  <data key="d1">34.0</data>
+  <data key="d2">5</data>
+</edge>
+<edge source="BEA" target="LIN">
+  <data key="d0">0.011764705882352941</data>
+  <data key="d1">85.0</data>
+  <data key="d2">2</data>
+</edge>
+<edge source="BEA" target="BOT">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="BEA" target="HAM">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="BEA" target="LEC">
+  <data key="d0">0.011764705882352941</data>
+  <data key="d1">85.0</data>
+  <data key="d2">2</data>
+</edge>
+<edge source="BEA" target="COL">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="GAS" target="BOR">
+  <data key="d0">0.03529411764705882</data>
+  <data key="d1">28.333333333333332</data>
+  <data key="d2">6</data>
+</edge>
+<edge source="GAS" target="LIN">
+  <data key="d0">0.011764705882352941</data>
+  <data key="d1">85.0</data>
+  <data key="d2">2</data>
+</edge>
+<edge source="GAS" target="SAI">
+  <data key="d0">0.023529411764705882</data>
+  <data key="d1">42.5</data>
+  <data key="d2">4</data>
+</edge>
+<edge source="GAS" target="LAW">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="GAS" target="HUL">
+  <data key="d0">0.029411764705882353</data>
+  <data key="d1">34.0</data>
+  <data key="d2">5</data>
+</edge>
+<edge source="GAS" target="ALB">
+  <data key="d0">0.01764705882352941</data>
+  <data key="d1">56.666666666666664</data>
+  <data key="d2">3</data>
+</edge>
+<edge source="SAI" target="ALO">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="SAI" target="COL">
+  <data key="d0">0.058823529411764705</data>
+  <data key="d1">17.0</data>
+  <data key="d2">10</data>
+</edge>
+<edge source="SAI" target="ALB">
+  <data key="d0">0.06470588235294118</data>
+  <data key="d1">15.454545454545453</data>
+  <data key="d2">11</data>
+</edge>
+<edge source="SAI" target="HAD">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="SAI" target="VER">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="BOR" target="HAD">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="BOR" target="VER">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="BOR" target="LAW">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="BOR" target="LIN">
+  <data key="d0">0.023529411764705882</data>
+  <data key="d1">42.5</data>
+  <data key="d2">4</data>
+</edge>
+<edge source="BOR" target="BOT">
+  <data key="d0">0.011764705882352941</data>
+  <data key="d1">85.0</data>
+  <data key="d2">2</data>
+</edge>
+<edge source="BOR" target="ALO">
+  <data key="d0">0.029411764705882353</data>
+  <data key="d1">34.0</data>
+  <data key="d2">5</data>
+</edge>
+<edge source="BOR" target="LEC">
+  <data key="d0">0.011764705882352941</data>
+  <data key="d1">85.0</data>
+  <data key="d2">2</data>
+</edge>
+<edge source="HAD" target="VER">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="HAD" target="LIN">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="HAD" target="HUL">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="ALO" target="ALB">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="ALO" target="PER">
+  <data key="d0">0.03529411764705882</data>
+  <data key="d1">28.333333333333332</data>
+  <data key="d2">6</data>
+</edge>
+<edge source="ALO" target="BOT">
+  <data key="d0">0.047058823529411764</data>
+  <data key="d1">21.25</data>
+  <data key="d2">8</data>
+</edge>
+<edge source="ALO" target="HUL">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="ALO" target="LAW">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="ALO" target="LIN">
+  <data key="d0">0.058823529411764705</data>
+  <data key="d1">17.0</data>
+  <data key="d2">10</data>
+</edge>
+<edge source="ALO" target="VER">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="ALO" target="LEC">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="PER" target="ALB">
+  <data key="d0">0.011764705882352941</data>
+  <data key="d1">85.0</data>
+  <data key="d2">2</data>
+</edge>
+<edge source="PER" target="LAW">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="PER" target="LIN">
+  <data key="d0">0.011764705882352941</data>
+  <data key="d1">85.0</data>
+  <data key="d2">2</data>
+</edge>
+<edge source="PER" target="BOT">
+  <data key="d0">0.01764705882352941</data>
+  <data key="d1">56.666666666666664</data>
+  <data key="d2">3</data>
+</edge>
+<edge source="COL" target="LAW">
+  <data key="d0">0.01764705882352941</data>
+  <data key="d1">56.666666666666664</data>
+  <data key="d2">3</data>
+</edge>
+<edge source="COL" target="VER">
+  <data key="d0">0.01764705882352941</data>
+  <data key="d1">56.666666666666664</data>
+  <data key="d2">3</data>
+</edge>
+<edge source="COL" target="ALB">
+  <data key="d0">0.01764705882352941</data>
+  <data key="d1">56.666666666666664</data>
+  <data key="d2">3</data>
+</edge>
+<edge source="COL" target="HAM">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="COL" target="LEC">
+  <data key="d0">0.01764705882352941</data>
+  <data key="d1">56.666666666666664</data>
+  <data key="d2">3</data>
+</edge>
+<edge source="LEC" target="HAM">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="LEC" target="HUL">
+  <data key="d0">0.011764705882352941</data>
+  <data key="d1">85.0</data>
+  <data key="d2">2</data>
+</edge>
+<edge source="LEC" target="LIN">
+  <data key="d0">0.011764705882352941</data>
+  <data key="d1">85.0</data>
+  <data key="d2">2</data>
+</edge>
+<edge source="LEC" target="ALB">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="LEC" target="VER">
+  <data key="d0">0.01764705882352941</data>
+  <data key="d1">56.666666666666664</data>
+  <data key="d2">3</data>
+</edge>
+<edge source="ALB" target="VER">
+  <data key="d0">0.011764705882352941</data>
+  <data key="d1">85.0</data>
+  <data key="d2">2</data>
+</edge>
+<edge source="ALB" target="LAW">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="ALB" target="HAM">
+  <data key="d0">0.011764705882352941</data>
+  <data key="d1">85.0</data>
+  <data key="d2">2</data>
+</edge>
+<edge source="HUL" target="VER">
+  <data key="d0">0.01764705882352941</data>
+  <data key="d1">56.666666666666664</data>
+  <data key="d2">3</data>
+</edge>
+<edge source="HUL" target="LIN">
+  <data key="d0">0.029411764705882353</data>
+  <data key="d1">34.0</data>
+  <data key="d2">5</data>
+</edge>
+<edge source="HUL" target="LAW">
+  <data key="d0">0.023529411764705882</data>
+  <data key="d1">42.5</data>
+  <data key="d2">4</data>
+</edge>
+<edge source="HAM" target="LIN">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="HAM" target="VER">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="LAW" target="VER">
+  <data key="d0">0.01764705882352941</data>
+  <data key="d1">56.666666666666664</data>
+  <data key="d2">3</data>
+</edge>
+<edge source="LAW" target="LIN">
+  <data key="d0">0.041176470588235294</data>
+  <data key="d1">24.285714285714285</data>
+  <data key="d2">7</data>
+</edge>
+<edge source="VER" target="LIN">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+<edge source="BOT" target="LIN">
+  <data key="d0">0.0058823529411764705</data>
+  <data key="d1">170.0</data>
+  <data key="d2">1</data>
+</edge>
+</graph></graphml>
