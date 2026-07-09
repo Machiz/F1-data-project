@@ -22,7 +22,7 @@ class OpenF1DataExtractor:
                 if response.status_code == 429:
                     # Fórmula ajustada: 5s, 10s, 20s, 40s, 80s...
                     wait_time = base_delay * (2 ** attempt) 
-                    print(f"    ⚠️ Límite de API (429) en {endpoint}. Castigo activo. Esperando {wait_time}s...")
+                    print(f"    [WARN] Límite de API (429) en {endpoint}. Castigo activo. Esperando {wait_time}s...")
                     time.sleep(wait_time)
                     continue 
                 
@@ -37,27 +37,27 @@ class OpenF1DataExtractor:
                 return pd.DataFrame()
                 
             except requests.exceptions.RequestException as e:
-                print(f"❌ Intento {attempt+1}/{max_retries} falló en {endpoint}: {e}")
+                print(f"[ERROR] Intento {attempt+1}/{max_retries} falló en {endpoint}: {e}")
                 time.sleep(base_delay)
                 
-        print(f"❌ Se omitió {endpoint} tras {max_retries} reintentos fallidos. El servidor no responde.")
+        print(f"[ERROR] Se omitió {endpoint} tras {max_retries} reintentos fallidos. El servidor no responde.")
         return pd.DataFrame()
 
     def extract_race(self, country_name):
         """Orquesta la descarga completa de una carrera."""
-        print(f"\n{'='*60}\n🏁 Iniciando extracción para: {country_name} {self.year}\n{'='*60}")
+        print(f"\n{'='*60}\n[RUN] Iniciando extracción para: {country_name} {self.year}\n{'='*60}")
         
         # 1. Obtener Meeting y Session
         meetings = self.fetch_endpoint("meetings", params={"year": self.year, "country_name": country_name})
         if meetings.empty:
-            print(f"⚠️ No se encontró el evento para {country_name}.")
+            print(f"[WARN] No se encontró el evento para {country_name}.")
             return
 
         m_key = meetings.iloc[0]['meeting_key']
         sessions = self.fetch_endpoint("sessions", params={"meeting_key": m_key, "session_name": "Race"})
         
         if sessions.empty:
-            print(f"⚠️ No se encontró la sesión de carrera para {country_name}.")
+            print(f"[WARN] No se encontró la sesión de carrera para {country_name}.")
             return
 
         s_key = sessions.iloc[0]['session_key']
@@ -83,14 +83,14 @@ class OpenF1DataExtractor:
             
             if not df.empty:
                 df.to_csv(os.path.join(output_dir, f"{ep}.csv"), index=False)
-                print(f"  ✅ {ep}.csv guardado ({len(df)} filas)")
+                print(f"  [OK] {ep}.csv guardado ({len(df)} filas)")
                 
                 # Rescatar los números de los 20 pilotos para usarlos después
                 if ep == "drivers" and "driver_number" in df.columns:
                     drivers_list = df["driver_number"].unique().tolist()
         
         if not drivers_list:
-            print("⚠️ No se pudo obtener la lista de pilotos. Deteniendo extracción.")
+            print("[WARN] No se pudo obtener la lista de pilotos. Deteniendo extracción.")
             return
 
         # 3. Descargar Datos por Entidad (Agrupando a TODOS los pilotos)
@@ -98,7 +98,7 @@ class OpenF1DataExtractor:
         entity_endpoints = ["laps", "stints", "pit", "intervals", "car_data", "location"]
 
         for ep in entity_endpoints:
-            print(f"⏳ Extrayendo {ep}...")
+            print(f"[WAIT] Extrayendo {ep}...")
             all_drivers_data = []
             
             for driver in drivers_list:
@@ -115,9 +115,9 @@ class OpenF1DataExtractor:
                 df_final = pd.concat(all_drivers_data, ignore_index=True)
                 file_path = os.path.join(output_dir, f"{ep}.csv")
                 df_final.to_csv(file_path, index=False)
-                print(f"  ✅ Guardado: {ep}.csv -> Datos unificados de todos los pilotos ({len(df_final):,} filas)")
+                print(f"  [OK] Guardado: {ep}.csv -> Datos unificados de todos los pilotos ({len(df_final):,} filas)")
             else:
-                print(f"  ⚠️ Sin datos en pista para {ep}.")
+                print(f"  [WARN] Sin datos en pista para {ep}.")
 
 def main():
     parser = argparse.ArgumentParser(description="F1 Data Pipeline - Ingesta Universal")
@@ -132,7 +132,7 @@ def main():
     for race in args.races:
         extractor.extract_race(race)
         
-    print("\n🎉 Pipeline de Ingesta Completado Exitosamente.")
+    print("\n[FINISHED] Pipeline de Ingesta Completado Exitosamente.")
 
 if __name__ == "__main__":
     main()

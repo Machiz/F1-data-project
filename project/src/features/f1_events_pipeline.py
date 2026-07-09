@@ -61,7 +61,7 @@ def preprocess_race(race_folder: Path) -> pd.DataFrame:
     # SOLUCIÓN DEL ERROR: Reconstrucción matemática de la posición
     # =================================================================
     if "position" not in master.columns:
-        print("    ⚠️ Columna 'position' no encontrada. Reconstruyendo posiciones matemáticas a partir de los tiempos acumulados...")
+        print("    [WARN] Columna 'position' no encontrada. Reconstruyendo posiciones matemáticas a partir de los tiempos acumulados...")
         master = master.sort_values(["driver_number", "lap_number"])
         
         # Calcular el tiempo total transcurrido para cada piloto
@@ -108,7 +108,7 @@ def preprocess_race(race_folder: Path) -> pd.DataFrame:
             master["stint_number"] = master["stint_number"].fillna(1)
             print(f"      * {len(stints_exp)} mapeos de neumáticos aplicados.")
     else:
-        print("    -> ⚠️ Omitiendo stints.csv (Archivo vacío o no encontrado).")
+        print("    -> [WARN] Omitiendo stints.csv (Archivo vacío o no encontrado).")
 
     # 3. Cargar Pits
     pit_file = race_folder / "pit.csv"
@@ -123,14 +123,14 @@ def preprocess_race(race_folder: Path) -> pd.DataFrame:
             master = master.merge(pit_agg, on=["driver_number", "lap_number"], how="left")
             print(f"      * {len(pit_agg)} paradas en boxes detectadas.")
     else:
-        print("    -> ⚠️ Omitiendo pit.csv (Archivo vacío o no encontrado).")
+        print("    -> [WARN] Omitiendo pit.csv (Archivo vacío o no encontrado).")
 
     if "pit_duration" not in master.columns:
         master["pit_duration"] = 0.0
     master["pit_duration"] = master["pit_duration"].fillna(0.0)
     master["is_pit_lap"] = (master["pit_duration"] > 0).astype(int)
 
-    print("    ✅ Integración completada con éxito.")
+    print("    [OK] Integración completada con éxito.")
     return master.sort_values(["lap_number", "position"]).reset_index(drop=True)
 
 # =====================================================================
@@ -219,17 +219,17 @@ def extract_events(master: pd.DataFrame, race_name: str) -> pd.DataFrame:
 
 def main():
     print("\n" + "="*70)
-    print("🏎️  Iniciando F1 Data Pipeline - Generación de Grafos")
+    print("[RUN] Iniciando F1 Data Pipeline - Generación de Grafos")
     print("="*70)
 
     if not RAW_DIR.exists():
-        print(f"❌ Error: El directorio crudo no existe: {RAW_DIR}")
+        print(f"[ERROR] El directorio crudo no existe: {RAW_DIR}")
         return
 
     race_folders = [f for f in RAW_DIR.iterdir() if f.is_dir() and list(f.glob("laps.csv"))]
     
     if not race_folders:
-        print(f"❌ No se encontraron carpetas de carreras con 'laps.csv' en {RAW_DIR}")
+        print(f"[ERROR] No se encontraron carpetas de carreras con 'laps.csv' en {RAW_DIR}")
         return
 
     for folder in race_folders:
@@ -239,19 +239,19 @@ def main():
             master_df = preprocess_race(folder)
             master_path = PROCESSED_DIR / f"{race_name}_master.parquet"
             master_df.to_parquet(master_path, index=False)
-            print(f"    ✓ [OK] Dataset Master exportado a '{master_path.name}'")
+            print(f"    [OK] Dataset Master exportado a '{master_path.name}'")
 
             # 2. Events Table 
             events_df = extract_events(master_df, race_name)
             if not events_df.empty:
                 events_path = EVENTS_DIR / f"{race_name}_events.parquet"
                 events_df.to_parquet(events_path, index=False)
-                print(f"    ✓ [OK] Dataset de Eventos exportado a '{events_path.name}'\n")
+                print(f"    [OK] Dataset de Eventos exportado a '{events_path.name}'\n")
             else:
-                print("    ⚠️ No se detectaron interacciones.\n")
+                print("    [WARN] No se detectaron interacciones.\n")
                 
         except Exception as e:
-            print(f"  ❌ Error procesando {race_name}: {e}")
+            print(f"  [ERROR] Error procesando {race_name}: {e}")
             print("Detalles del error:")
             print(traceback.format_exc())
 
