@@ -1,0 +1,5 @@
+# Modelos y datos pesados generados localmente
+models/*.pkl
+models/*.joblib
+data/processed/recommendation/*.parquet
+*.bak

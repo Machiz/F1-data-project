@@ -213,9 +213,10 @@ class RealtimePipeline:
         candidates = []
         total_laps = self.get_total_laps()
         
-        for w in range(6):
+        for w in range(7):
             c_row = current_state.copy()
             c_row["wait_laps"] = w
+            c_row["is_no_pit"] = int(w == 6)
             c_row["lap_mean_3"] = lap_mean_3
             c_row["lap_std_3"] = lap_std_3
             c_row["lap_slope_3"] = lap_slope_3
@@ -246,7 +247,8 @@ class RealtimePipeline:
             X_reg[col] = X_reg[col].fillna(0.0)
             
         df_candidates["predicted_future_pace"] = self.model_reg.predict(X_reg)
-        df_candidates["predicted_cost_of_staying"] = df_candidates["wait_laps"] * (
+        effective_wait = df_candidates["wait_laps"].clip(upper=5)
+        df_candidates["predicted_cost_of_staying"] = effective_wait * (
             df_candidates["predicted_future_pace"] - current_state["lap_duration"]
         )
         

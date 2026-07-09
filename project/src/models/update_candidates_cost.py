@@ -48,9 +48,11 @@ def main():
     # Predecir ritmo esperado de permanencia
     df["predicted_future_pace"] = model.predict(df_processed[features])
     
-    # predicted_cost_of_staying = wait_laps * (predicted_future_pace - current_lap_duration)
-    df["predicted_cost_of_staying"] = df["wait_laps"] * (df["predicted_future_pace"] - df["lap_duration"])
-    
+    # NO_PIT (wait_laps == 6) representa permanecer fuera toda la ventana (5 vueltas),
+    # no esperar literalmente 6; se acota el horizonte efectivo a 5 para el costo.
+    effective_wait = df["wait_laps"].clip(upper=5)
+    df["predicted_cost_of_staying"] = effective_wait * (df["predicted_future_pace"] - df["lap_duration"])
+
     # Sobrescribir dataset
     df.to_parquet(DATA_PATH, index=False)
     print("Dataset de candidatos actualizado con predicted_cost_of_staying exitosamente.")

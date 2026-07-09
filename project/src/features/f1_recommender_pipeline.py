@@ -159,33 +159,49 @@ def process_race_recommender(race_folder: Path, df_tel_race: pd.DataFrame) -> pd
         
     df_pit_metrics = pd.DataFrame(pit_metrics)
     
-    # 8. Expandir en 6 candidatos (wait_laps = 0 a 5)
+    # 8. Expandir en 7 candidatos: wait_laps = 0..5 (parar tras esperar w vueltas)
+    #    y wait_laps = 6 = NO_PIT / STAY_OUT (no parar en las proximas 5 vueltas).
+    NO_PIT = 6
     expanded_rows = []
     for _, row in base_df.iterrows():
         drv = row["driver_number"]
         lp = row["lap_number"]
-        
-        for w in range(6):
+
+        # Se determina UNA sola vez por grupo si hubo un pit real dentro de la ventana [lp, lp+5].
+        has_pit_in_window = False
+        if not df_pit_metrics.empty:
+            has_pit_in_window = not df_pit_metrics[
+                (df_pit_metrics["driver_number"] == drv)
+                & (df_pit_metrics["pit_lap"] >= lp)
+                & (df_pit_metrics["pit_lap"] <= lp + 5)
+            ].empty
+
+        for w in range(7):  # 0..5 + NO_PIT (6)
             candidate_row = row.copy()
             candidate_row["candidate"] = w
             candidate_row["wait_laps"] = w
-            
-            # El predicted_cost_of_staying lo inicializamos en 0.0. 
-            # Será actualizado después con las predicciones del modelo de regresión (Capa 1).
+            candidate_row["is_no_pit"] = int(w == NO_PIT)
+
+            # Se inicializa en 0.0; se sobrescribe luego con la Capa 1 (update_candidates_cost.py).
             candidate_row["predicted_cost_of_staying"] = 0.0
-            
-            # Asignación de la etiqueta de éxito
-            label = 0.0
-            if not df_pit_metrics.empty:
-                # Buscamos si el piloto paró en la vuelta real correspondiente (lp + w)
-                match = df_pit_metrics[(df_pit_metrics["driver_number"] == drv) & (df_pit_metrics["pit_lap"] == lp + w)]
-                if not match.empty:
-                    label = match["success_score"].values[0]
-                else:
-                    # Penalización por no parar en la ventana de parada real
-                    # Esto ayuda al modelo a aprender que las vueltas lejanas a la parada real son subóptimas
-                    label = -2.0 if w > 0 else 0.0
-            
+
+            # --- Asignacion de la etiqueta de exito ---
+            if w == NO_PIT:
+                # NO_PIT es la accion ganadora SOLO cuando no hubo parada real en la ventana.
+                label = 0.0 if not has_pit_in_window else -2.0
+            else:
+                # Candidatos de parada 0..5: gana el offset que coincide con una parada real.
+                # Se elimina el piso espurio de 0.0 para w=0: ahora todos los offsets sin
+                # coincidencia se penalizan por igual, de modo que wait_laps=0 ya no gana por defecto.
+                label = -2.0
+                if not df_pit_metrics.empty:
+                    match = df_pit_metrics[
+                        (df_pit_metrics["driver_number"] == drv)
+                        & (df_pit_metrics["pit_lap"] == lp + w)
+                    ]
+                    if not match.empty:
+                        label = match["success_score"].values[0]
+
             candidate_row["success_score_label"] = label
             expanded_rows.append(candidate_row)
             
