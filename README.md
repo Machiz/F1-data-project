@@ -20,17 +20,28 @@ In modern Formula 1, decision-making is driven by data. This project utilizes th
 ---
 
 ## 📂 Repository Structure
+
+All development and pipelines are located in the `project/` directory:
+
 ```text
 F1-data-project/
-├── data/
-│   ├── raw/                # Raw CSV files extracted from the API.
-│   │   ├── australia_2026/
-│   │   ├── china_2026/
-│   │   └── japan_2026/
-│   └── processed/          # Cleaned and transformed datasets for models.
-├── src/
-│   ├── Data_extract.py     # Ingestion engineering script (E-L).
-│   ├── preprocessing.py    # Cleaning and time-series alignment.
-│   └── models/             # PCA, Clustering, and Graph scripts (Coming Soon).
-├── notebooks/              # Exploratory Data Analysis (EDA).
+├── project/
+│   ├── data/                 # Raw data and generated Parquet files
+│   ├── src/                  # Production pipeline and training scripts
+│   │   ├── data_extraction/  # Ingestion scripts (OpenF1 API)
+│   │   ├── features/         # Preprocessing and event extraction
+│   │   ├── graphs/           # Graph construction (DRS & Overtakes)
+│   │   └── models/           # Layer 1 (Stacking) and Layer 2 (Ranker) training
+│   ├── notebooks/            # Jupyter Notebooks (EDA, PCA, Clustering, t-SNE)
+│   ├── reports/              # Core project documentation and findings
+│   ├── requirements.txt      # Project environment dependencies
+│   └── runbook.md            # Reproduction guide
 └── README.md
+```
+
+## 🚀 Reproduction and Execution
+
+The project features a fully automated and reproducible data-to-model pipeline. To install dependencies, extract telemetry data, process features, train the Stacking and Ranking models, and analyze graphs:
+
+👉 **Please refer to the detailed [project/runbook.md](file:///c:/Users/User/Documents/GitHub/F1-data-project/project/runbook.md) for step-by-step instructions.**
+
