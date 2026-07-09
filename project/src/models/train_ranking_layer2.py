@@ -21,7 +21,9 @@ def main():
         "tyre_age", "compound_ord", "lap_vs_best_stint", "lap_mean_3", 
         "lap_std_3", "lap_slope_3", "deg_rate_3lap", "position", 
         "is_top10", "laps_remaining", "race_pct_complete", 
-        "gap_ahead", "gap_behind", "wait_laps", "predicted_cost_of_staying"
+        "gap_ahead", "gap_behind", "wait_laps", "predicted_cost_of_staying",
+        "pit_gap_ahead", "pit_gap_behind", "delta_time_loss",
+        "compound_SOFT", "compound_MEDIUM", "compound_HARD"
     ]
     
     # Imputación
@@ -34,9 +36,23 @@ def main():
     X = df[features]
     y = df["success_score_label"]
     
+    # Calcular pesos de muestra para mitigar el desbalance de clases extremo
+    # Definimos como clase positiva (1) los candidatos que tienen una etiqueta superior al penalizador neutro (-2.0)
+    is_positive = (y > -2.0).astype(int)
+    n_pos = (is_positive == 1).sum()
+    n_neg = (is_positive == 0).sum()
+    
+    if n_pos > 0:
+        weight_ratio = n_neg / n_pos
+        sample_weights = np.where(is_positive == 1, weight_ratio, 1.0)
+        print(f"Desbalance detectado: Negativos={n_neg}, Positivos={n_pos} | Ratio de peso aplicado={weight_ratio:.4f}")
+    else:
+        sample_weights = np.ones(len(y))
+        print("No se detectaron clases positivas, usando pesos uniformes.")
+    
     # Entrenar RandomForestRegressor (seleccionado como mejor modelo de ranking)
     model = RandomForestRegressor(n_estimators=100, max_depth=8, random_state=42)
-    model.fit(X, y)
+    model.fit(X, y, sample_weight=sample_weights)
     
     # Guardar modelo
     output_path = MODELS_DIR / "ranking_layer2_model.pkl"

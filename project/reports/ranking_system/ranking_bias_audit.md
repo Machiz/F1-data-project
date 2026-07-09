@@ -1,7 +1,7 @@
 # Auditoria de sesgo del ranking de pit stops (Capa 2)
 
 Grupos de decision evaluados (carrera, piloto, vuelta): **3331**
-Modelo: `models/ranking_layer2_model.pkl` (features: 15)
+Modelo: `models/ranking_layer2_model.pkl` (features: 21)
 Dataset: `data/processed/recommendation/pit_decision_candidates_v1.parquet`
 Acciones: `wait_laps` 0-5 (parar tras esperar w vueltas) + `wait_laps=6` (NO_PIT / STAY_OUT)
 
@@ -21,31 +21,31 @@ Acciones: `wait_laps` 0-5 (parar tras esperar w vueltas) + `wait_laps=6` (NO_PIT
 
 | accion | wait_laps | n | % |
 |---|---|---|---|
-| Parar ahora (0) | 0 | 22 | 0.66% |
-| Esperar 1 | 1 | 6 | 0.18% |
-| Esperar 2 | 2 | 59 | 1.77% |
-| Esperar 3 | 3 | 32 | 0.96% |
-| Esperar 4 | 4 | 52 | 1.56% |
-| Esperar 5 | 5 | 86 | 2.58% |
-| NO_PIT | 6 | 3074 | 92.28% |
+| Parar ahora (0) | 0 | 36 | 1.08% |
+| Esperar 1 | 1 | 22 | 0.66% |
+| Esperar 2 | 2 | 26 | 0.78% |
+| Esperar 3 | 3 | 40 | 1.20% |
+| Esperar 4 | 4 | 32 | 0.96% |
+| Esperar 5 | 5 | 47 | 1.41% |
+| NO_PIT | 6 | 3128 | 93.91% |
 
 ## Metricas
 
 | Metrica | Valor |
 |---|---|
-| Accuracy global (accion exacta) | 0.8775 |
+| Accuracy global (accion exacta) | 0.9093 |
 | Baseline "siempre NO_PIT (6)" | 0.8898 |
 | Baseline "siempre parar ya (0)" (referencia historica) | 0.0417 |
-| Accuracy de decision binaria (parar vs no parar) | 0.8937 |
+| Accuracy de decision binaria (parar vs no parar) | 0.9147 |
 | Grupos con parada optima real (optimo != 6) | 367 |
-| Accuracy binaria en esos grupos (detecta que hay que parar) | 0.3678 |
-| Accuracy exacta en esos grupos (offset correcto) | 0.2207 |
+| Accuracy binaria en esos grupos (detecta que hay que parar) | 0.3896 |
+| Accuracy exacta en esos grupos (offset correcto) | 0.3406 |
 
 ## Interpretacion
 
-La accuracy global (0.8775) **no supera** al baseline trivial 'siempre NO_PIT' (0.8898); en un target tan desbalanceado, la accuracy global sigue siendo poco informativa.
+La accuracy global (0.9093) supera al baseline trivial 'siempre NO_PIT' (0.8898) por 1.95 puntos porcentuales.
 
-En los 367 grupos donde la decision optima real fue una parada (offset 0-5), el modelo detecta correctamente la necesidad de parar (decision binaria parar/no parar) en el 36.78% de los casos y acierta el offset exacto en el 22.07%. La decision binaria es la metrica principal de utilidad del recomendador; el offset exacto es una exigencia mas estricta.
+En los 367 grupos donde la decision optima real fue una parada (offset 0-5), el modelo detecta correctamente la necesidad de parar (decision binaria parar/no parar) en el 38.96% de los casos y acierta el offset exacto en el 34.06%. La decision binaria es la metrica principal de utilidad del recomendador; el offset exacto es una exigencia mas estricta.
 
 Con NO_PIT como accion explicita, el candidato wait_laps=0 deja de recibir la mejor etiqueta por defecto en las vueltas sin ventana de parada real, de modo que 'quedarse fuera' se aprende como una decision propia y no como un artefacto del etiquetado.
 
