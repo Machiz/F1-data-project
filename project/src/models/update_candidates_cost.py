@@ -7,15 +7,15 @@ from pathlib import Path
 # Configuración de rutas
 SRC_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = SRC_DIR.parent.parent
-DATA_PATH = PROJECT_DIR / "data" / "recommendation" / "pit_decision_candidates_v1.parquet"
-FEATURES_DIR = PROJECT_DIR / "data" / "features"
+DATA_PATH = PROJECT_DIR / "data" / "processed" / "recommendation" / "pit_decision_candidates_v1.parquet"
+MODELS_DIR = PROJECT_DIR / "models"
 
 def main():
     print("--- Integrando Modelo de Regresión Capa 1 a los Candidatos (Puente) ---")
     df = pd.read_parquet(DATA_PATH)
     
     # Cargar modelo entrenado
-    model_path = FEATURES_DIR / "regression_layer1_model.pkl"
+    model_path = MODELS_DIR / "regression_layer1_model.pkl"
     if not model_path.exists():
         print(f"Error: No se encuentra el modelo {model_path.name}. Ejecute primero train_regression_layer1.py")
         return
@@ -23,7 +23,7 @@ def main():
     model = joblib.load(model_path)
     
     # Cargar la lista de features entrenadas (que incluyen dummy variables de race_name y driver_number)
-    feature_list_path = FEATURES_DIR / "regression_features.joblib"
+    feature_list_path = MODELS_DIR / "regression_features.joblib"
     if not feature_list_path.exists():
         print(f"Error: No se encuentra la lista de features {feature_list_path.name}. Ejecute primero train_regression_layer1.py")
         return

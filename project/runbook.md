@@ -70,8 +70,8 @@ python src/features/f1_events_pipeline.py
 
 *   **Entradas:** Archivos CSV de `data/raw/`.
 *   **Salidas:**
-    *   **Master Parquets:** `data/processed/{carrera}_master.parquet` (1 fila = 1 vuelta de 1 piloto).
-    *   **Events Parquets:** `data/events/{carrera}_events.parquet` (1 fila = 1 interacción/evento táctico).
+    *   **Master Parquets:** `data/processed/master/{carrera}_master.parquet` (1 fila = 1 vuelta de 1 piloto).
+    *   **Events Parquets:** `data/processed/events/{carrera}_events.parquet` (1 fila = 1 interacción/evento táctico).
 
 ---
 
@@ -89,21 +89,21 @@ Abre y ejecuta todas las celdas de:
 [Feature_engineering_v5.ipynb](file:///c:/Users/User/Documents/GitHub/F1-data-project/project/notebooks/feature%20engineering/Feature_engineering_v5.ipynb)
 
 *   **Objetivo:** Divide el espacio de datos en Capa A (Telemetría) y Capa B (Táctica).
-*   **Salida:** `data/features/telemetry_features_v4.parquet` y `tactical_features_v4.parquet`.
+*   **Salida:** `data/processed/features/telemetry_features_v4.parquet` y `tactical_features_v4.parquet`.
 
 ### B. PCA (Reducción Dimensional Lineal)
 Abre y ejecuta todas las celdas de:  
 [PCA_v4.ipynb](file:///c:/Users/User/Documents/GitHub/F1-data-project/project/notebooks/dimensionality%20reduction/PCA_v4.ipynb)
 
 *   **Objetivo:** Reduce las 24 variables numéricas de telemetría a 6 componentes principales ortogonales.
-*   **Salida:** `data/features/telemetry_pca_v4.parquet`.
+*   **Salida:** `data/processed/features/telemetry_pca_v4.parquet`.
 
 ### C. t-SNE (Embeddings de Manifold Learning)
 Abre y ejecuta todas las celdas de:  
 [tSNE_Embeddings_Manifold_Learning.ipynb](file:///c:/Users/User/Documents/GitHub/F1-data-project/project/notebooks/dimensionality%20reduction/tSNE_Embeddings_Manifold_Learning.ipynb)
 
 *   **Objetivo:** Proyecta eventos tácticos de alta dimensionalidad en espacios de 2D y 3D.
-*   **Salida:** `data/features/tactical_embeddings.parquet`.
+*   **Salida:** `data/processed/features/tactical_embeddings.parquet`.
 
 ---
 
@@ -115,7 +115,7 @@ Para replicar y validar la segmentación no supervisada de estados de rendimient
 2.  **Hierarchical Clustering:** Ejecuta [Hierarchical_Clustering_Telemetry_PCA.ipynb](file:///c:/Users/User/Documents/GitHub/F1-data-project/project/notebooks/clustering%20models/Hierarchical_Clustering_Telemetry_PCA.ipynb).
 3.  **DBSCAN V3:** Ejecuta [DBSCAN_V3_Telemetry_PCA.ipynb](file:///c:/Users/User/Documents/GitHub/F1-data-project/project/notebooks/clustering%20models/DBSCAN_V3_Telemetry_PCA.ipynb).
 
-*   **Entrada:** `data/features/telemetry_pca_v4.parquet`.
+*   **Entrada:** `data/processed/features/telemetry_pca_v4.parquet`.
 *   **Salida:** Evaluaciones de cohesión y separación de clústeres.
 
 ---
@@ -131,14 +131,14 @@ Expande la telemetría agregando tráfico temporal en ventana móvil y el target
 ```bash
 python src/features/f1_recommender_pipeline.py
 ```
-*   **Salida:** `data/recommendation/pit_decision_candidates_v1.parquet`.
+*   **Salida:** `data/processed/recommendation/pit_decision_candidates_v1.parquet`.
 
 ### 2. Entrenar el Modelo Físico de Degradación (Capa 1)
 Entrena el ensamble por Stacking (XGBoost + Extra Trees -> Ridge Regression) con validación cruzada GroupKFold por carrera:
 ```bash
 python src/models/train_regression_layer1.py
 ```
-*   **Salida:** `data/features/regression_layer1_model.pkl` y la metadata de alineación `regression_features.joblib`.
+*   **Salida:** `models/regression_layer1_model.pkl` y la metadata de alineación `models/regression_features.joblib`.
 
 ### 3. Calcular el Puente de Costo Estratégico
 Predice los tiempos futuros de permanencia y genera el coste acumulado en segundos por cada ventana de espera de pits:
@@ -152,7 +152,7 @@ Entrena el Point-wise Ranker (Random Forest Regressor) para priorizar las 6 opci
 ```bash
 python src/models/train_ranking_layer2.py
 ```
-*   **Salida:** `data/features/ranking_layer2_model.pkl` (Evaluación final offline NDCG@1 = 89.74%).
+*   **Salida:** `models/ranking_layer2_model.pkl` (Evaluación final offline NDCG@1 = 89.74%).
 
 ---
 
@@ -168,7 +168,7 @@ python src/graphs/graph_construction.py
 python src/graphs/drs_graph_construction.py
 ```
 
-*   **Entrada:** Archivos Parquet de `data/events/` y `data/raw/`.
+*   **Entrada:** Archivos Parquet de `data/processed/events/` y `data/raw/`.
 *   **Salida:** Métricas de dominancia y agrupamientos impresas en consola e integradas en los reportes de grafos.
 
 ---

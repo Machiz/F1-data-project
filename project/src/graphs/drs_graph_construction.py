@@ -26,21 +26,21 @@ def get_data_paths():
 
 def build_drs_interval_graph(race_folder_name, raw_path, processed_path):
     """Build undirected weighted graph of DRS interactions for a single race."""
-    # Find master parquet file (could be {race_name}_2026_master.parquet or {race_name}_master.parquet)
+    # Find master parquet file in the consolidated master directory
     race_clean = race_folder_name.replace('_2026', '')
-    race_processed_dir = os.path.join(processed_path, race_clean)
+    master_dir = os.path.join(processed_path, "master")
     
     # Check if directory exists
-    if not os.path.exists(race_processed_dir):
-        raise FileNotFoundError(f"Processed directory not found for race {race_clean} at {race_processed_dir}")
+    if not os.path.exists(master_dir):
+        raise FileNotFoundError(f"Master directory not found at {master_dir}")
         
-    master_files = glob.glob(os.path.join(race_processed_dir, "*_master.parquet"))
+    master_files = glob.glob(os.path.join(master_dir, f"{race_clean}_*_master.parquet"))
     if not master_files:
         # Try finding v2 or fallback
-        master_files = glob.glob(os.path.join(race_processed_dir, "*_master*.parquet"))
+        master_files = glob.glob(os.path.join(master_dir, f"{race_clean}_*master*.parquet"))
         
     if not master_files:
-        raise FileNotFoundError(f"No master parquet file found for race {race_clean} in {race_processed_dir}")
+        raise FileNotFoundError(f"No master parquet file found for race {race_clean} in {master_dir}")
         
     master_file = master_files[0]
     intervals_file = os.path.join(raw_path, race_folder_name, "intervals.csv")

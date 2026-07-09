@@ -16,7 +16,7 @@ def get_data_paths():
     ]
     
     for root in possible_roots:
-        events_path = os.path.join(root, 'data', 'events')
+        events_path = os.path.join(root, 'data', 'processed', 'events')
         raw_path = os.path.join(root, 'data', 'raw')
         processed_path = os.path.join(root, 'data', 'processed')
         if os.path.exists(events_path) and os.path.exists(raw_path):

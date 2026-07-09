@@ -13,8 +13,8 @@ warnings.filterwarnings('ignore')
 SRC_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = SRC_DIR.parent.parent
 RAW_DIR = PROJECT_DIR / "data" / "raw"
-PROCESSED_DIR = PROJECT_DIR / "data" / "processed"
-EVENTS_DIR = PROJECT_DIR / "data" / "events"
+PROCESSED_DIR = PROJECT_DIR / "data" / "processed" / "master"
+EVENTS_DIR = PROJECT_DIR / "data" / "processed" / "events"
 
 PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 EVENTS_DIR.mkdir(parents=True, exist_ok=True)

@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.ipynb_checkpoints/
+.pytest_cache/
+.vscode/
+.idea/
+
+# Environment
+venv/
+ENV/
+env/
+.env
+
+# Jupyter Server logs
+.ipynb_checkpoints
+
+# OS files
+.DS_Store
+Thumbs.db

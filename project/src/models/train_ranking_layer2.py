@@ -8,8 +8,10 @@ from sklearn.ensemble import RandomForestRegressor
 # Configuración de rutas
 SRC_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = SRC_DIR.parent.parent
-DATA_PATH = PROJECT_DIR / "data" / "recommendation" / "pit_decision_candidates_v1.parquet"
-FEATURES_DIR = PROJECT_DIR / "data" / "features"
+DATA_PATH = PROJECT_DIR / "data" / "processed" / "recommendation" / "pit_decision_candidates_v1.parquet"
+MODELS_DIR = PROJECT_DIR / "models"
+
+MODELS_DIR.mkdir(parents=True, exist_ok=True)
 
 def main():
     print("--- Entrenando Modelo de Ranking Capa 2 (Random Forest Point-wise) ---")
@@ -37,7 +39,7 @@ def main():
     model.fit(X, y)
     
     # Guardar modelo
-    output_path = FEATURES_DIR / "ranking_layer2_model.pkl"
+    output_path = MODELS_DIR / "ranking_layer2_model.pkl"
     joblib.dump(model, output_path)
     print(f"Capa 2 completada. Modelo guardado en: {output_path}")
 

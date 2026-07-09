@@ -11,7 +11,7 @@ warnings.filterwarnings('ignore')
 SRC_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = SRC_DIR.parent.parent
 RAW_DIR = PROJECT_DIR / "data" / "raw"
-FEATURES_DIR = PROJECT_DIR / "data" / "features"
+FEATURES_DIR = PROJECT_DIR / "data" / "processed" / "features"
 
 FEATURES_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -233,7 +233,7 @@ def main():
         df_final = pd.concat(all_expanded_data, ignore_index=True)
         
         # Guardar en parquet
-        recommendation_dir = PROJECT_DIR / "data" / "recommendation"
+        recommendation_dir = PROJECT_DIR / "data" / "processed" / "recommendation"
         recommendation_dir.mkdir(parents=True, exist_ok=True)
         output_path = recommendation_dir / "pit_decision_candidates_v1.parquet"
         df_final.to_parquet(output_path, index=False)

@@ -11,10 +11,10 @@ from sklearn.metrics import r2_score
 # Configuración de rutas
 SRC_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = SRC_DIR.parent.parent
-DATA_PATH = PROJECT_DIR / "data" / "recommendation" / "pit_decision_candidates_v1.parquet"
-FEATURES_DIR = PROJECT_DIR / "data" / "features"
+DATA_PATH = PROJECT_DIR / "data" / "processed" / "recommendation" / "pit_decision_candidates_v1.parquet"
+MODELS_DIR = PROJECT_DIR / "models"
 
-FEATURES_DIR.mkdir(parents=True, exist_ok=True)
+MODELS_DIR.mkdir(parents=True, exist_ok=True)
 
 def compute_regression_targets(df):
     """Calcula los objetivos reales de degradación para la Capa 1."""
@@ -103,8 +103,8 @@ def main():
     print(f"R2 Train Score: {r2:.4f}")
     
     # Guardar modelo y lista de features (crucial para despliegue posterior)
-    output_path = FEATURES_DIR / "regression_layer1_model.pkl"
-    feature_list_path = FEATURES_DIR / "regression_features.joblib"
+    output_path = MODELS_DIR / "regression_layer1_model.pkl"
+    feature_list_path = MODELS_DIR / "regression_features.joblib"
     
     joblib.dump(model, output_path)
     joblib.dump(features, feature_list_path)
