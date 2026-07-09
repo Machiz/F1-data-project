@@ -72,7 +72,9 @@ def main():
         "tyre_age", "compound_ord", "lap_vs_best_stint", "lap_mean_3", 
         "lap_std_3", "lap_slope_3", "deg_rate_3lap", "position", 
         "is_top10", "laps_remaining", "race_pct_complete", 
-        "gap_ahead", "gap_behind", "wait_laps", "driver_number"
+        "gap_ahead", "gap_behind", "wait_laps", "driver_number",
+        "pit_gap_ahead", "pit_gap_behind", "delta_time_loss",
+        "compound_SOFT", "compound_MEDIUM", "compound_HARD"
     ]
     race_features = [col for col in df_reg.columns if col.startswith("race_name_")]
     features += race_features

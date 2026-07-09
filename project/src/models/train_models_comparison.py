@@ -16,7 +16,7 @@ warnings.filterwarnings('ignore')
 # Configuración de rutas
 SRC_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = SRC_DIR.parent.parent
-DATA_PATH = PROJECT_DIR / "data" / "recommendation" / "pit_decision_candidates_v1.parquet"
+DATA_PATH = PROJECT_DIR / "data" / "processed" / "recommendation" / "pit_decision_candidates_v1.parquet"
 FEATURES_DIR = PROJECT_DIR / "data" / "features"
 
 def compute_regression_targets(df):
@@ -126,7 +126,9 @@ def run_experiments():
         "tyre_age", "compound_ord", "lap_vs_best_stint", "lap_mean_3", 
         "lap_std_3", "lap_slope_3", "deg_rate_3lap", "position", 
         "is_top10", "laps_remaining", "race_pct_complete", 
-        "gap_ahead", "gap_behind", "wait_laps"
+        "gap_ahead", "gap_behind", "wait_laps",
+        "pit_gap_ahead", "pit_gap_behind", "delta_time_loss",
+        "compound_SOFT", "compound_MEDIUM", "compound_HARD"
     ]
     
     # Imputar nulos con la mediana de cada columna para evitar errores en regresores simples
@@ -264,8 +266,18 @@ def run_experiments():
         y_tr = df_tr_split["success_score_label"]
         X_te = df_te_split[ranking_features]
         
+        # Calcular pesos de muestra para el RF en train
+        is_pos_tr = (y_tr > -2.0).astype(int)
+        n_pos_tr = (is_pos_tr == 1).sum()
+        n_neg_tr = (is_pos_tr == 0).sum()
+        if n_pos_tr > 0:
+            w_ratio_tr = n_neg_tr / n_pos_tr
+            sw_tr = np.where(is_pos_tr == 1, w_ratio_tr, 1.0)
+        else:
+            sw_tr = np.ones(len(y_tr))
+            
         rf = RandomForestRegressor(n_estimators=100, max_depth=8, random_state=42)
-        rf.fit(X_tr, y_tr)
+        rf.fit(X_tr, y_tr, sample_weight=sw_tr)
         df_te_split["pred_rf"] = rf.predict(X_te)
         
         # 5. List-wise XGBRanker
@@ -317,8 +329,18 @@ def run_experiments():
     
     # Entrenar el mejor modelo (Random Forest Point-wise) sobre todo el dataset de ranking para guardar
     print("\nEntrenando modelo final de Capa 2 (Random Forest Point-wise) sobre todo el dataset...")
+    # Calcular pesos de muestra para el RF final
+    is_pos_final = (y_rank > -2.0).astype(int)
+    n_pos_final = (is_pos_final == 1).sum()
+    n_neg_final = (is_pos_final == 0).sum()
+    if n_pos_final > 0:
+        w_ratio_final = n_neg_final / n_pos_final
+        sw_final = np.where(is_pos_final == 1, w_ratio_final, 1.0)
+    else:
+        sw_final = np.ones(len(y_rank))
+        
     final_rf = RandomForestRegressor(n_estimators=100, max_depth=8, random_state=42)
-    final_rf.fit(X_rank, y_rank)
+    final_rf.fit(X_rank, y_rank, sample_weight=sw_final)
     joblib.dump(final_rf, FEATURES_DIR / "ranking_layer2_model.pkl")
     print(f"Modelo Capa 2 Random Forest Regressor guardado en: features/ranking_layer2_model.pkl")
 

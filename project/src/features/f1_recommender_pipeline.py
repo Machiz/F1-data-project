@@ -118,6 +118,66 @@ def process_race_recommender(race_folder: Path, df_tel_race: pd.DataFrame) -> pd
     base_df["race_pct_complete"] = base_df["lap_number"] / total_laps
     base_df["is_top10"] = (base_df["position"] <= 10).astype(int)
     
+    # 6.1 Calcular degradación acumulada (delta_time_loss)
+    base_df = base_df.sort_values(["driver_number", "lap_number"])
+    base_df["delta_time_loss"] = base_df.groupby(["driver_number", "stint_number"])["lap_vs_best_stint"].transform(
+        lambda x: x.expanding().mean()
+    )
+
+    # 6.2 Calcular huecos de tráfico tras parada (pit_gap_ahead_lap, pit_gap_behind_lap)
+    PIT_LOSS_DICT = {
+        "australia": 15.5,
+        "china": 39.0,
+        "japan": 32.8,
+        "united_states": 12.0,
+        "united_kingdom": 20.0,
+    }
+    pit_loss = PIT_LOSS_DICT.get(race_name, 20.0)
+
+    base_df["cum_duration"] = base_df.groupby("driver_number")["lap_duration"].cumsum()
+    cum_lookup = base_df.set_index(["driver_number", "lap_number"])["cum_duration"].to_dict()
+    pit_lookup = base_df.set_index(["driver_number", "lap_number"])["is_pit_lap"].to_dict()
+    drivers_list = sorted(base_df["driver_number"].unique())
+
+    pit_gap_ahead_list = []
+    pit_gap_behind_list = []
+
+    for idx, row in base_df.iterrows():
+        drv = row["driver_number"]
+        lp = row["lap_number"]
+        cum = row["cum_duration"]
+        is_pit_real = pit_lookup.get((drv, lp), 0.0) == 1.0
+        
+        cum_post_pit = cum if is_pit_real else cum + pit_loss
+        
+        other_cums = []
+        for other_drv in drivers_list:
+            if other_drv != drv:
+                other_cum = cum_lookup.get((other_drv, lp))
+                if other_cum is not None:
+                    other_cums.append(other_cum)
+                    
+        if not other_cums:
+            pit_gap_ahead_list.append(30.0)
+            pit_gap_behind_list.append(30.0)
+            continue
+            
+        ahead_cums = [c for c in other_cums if c < cum_post_pit]
+        gap_a = cum_post_pit - max(ahead_cums) if ahead_cums else 30.0
+        
+        behind_cums = [c for c in other_cums if c > cum_post_pit]
+        gap_b = min(behind_cums) - cum_post_pit if behind_cums else 30.0
+        
+        pit_gap_ahead_list.append(gap_a)
+        pit_gap_behind_list.append(gap_b)
+
+    base_df["pit_gap_ahead_lap"] = pit_gap_ahead_list
+    base_df["pit_gap_behind_lap"] = pit_gap_behind_list
+
+    # Crear lookups rápidos para el mapeo de candidatos
+    pit_gaps_lookup = base_df.set_index(["driver_number", "lap_number"])[["pit_gap_ahead_lap", "pit_gap_behind_lap"]].to_dict("index")
+    delta_loss_lookup = base_df.set_index(["driver_number", "lap_number"])["delta_time_loss"].to_dict()
+
     # 7. Identificar paradas en boxes reales y calcular etiqueta proxy de éxito
     pit_stops = base_df[base_df["is_pit_lap"] == 1][["driver_number", "lap_number", "position", "lap_duration"]].copy()
     
@@ -184,6 +244,25 @@ def process_race_recommender(race_folder: Path, df_tel_race: pd.DataFrame) -> pd
 
             # Se inicializa en 0.0; se sobrescribe luego con la Capa 1 (update_candidates_cost.py).
             candidate_row["predicted_cost_of_staying"] = 0.0
+
+            # Mapear variables de tráfico y degradación para la vuelta objetivo lp + w
+            target_lap = lp + w if w != NO_PIT else lp
+            gaps = pit_gaps_lookup.get((drv, target_lap))
+            if gaps is not None:
+                candidate_row["pit_gap_ahead"] = gaps["pit_gap_ahead_lap"]
+                candidate_row["pit_gap_behind"] = gaps["pit_gap_behind_lap"]
+            else:
+                gaps_curr = pit_gaps_lookup.get((drv, lp), {"pit_gap_ahead_lap": 30.0, "pit_gap_behind_lap": 30.0})
+                candidate_row["pit_gap_ahead"] = gaps_curr["pit_gap_ahead_lap"]
+                candidate_row["pit_gap_behind"] = gaps_curr["pit_gap_behind_lap"]
+
+            dtl = delta_loss_lookup.get((drv, target_lap))
+            candidate_row["delta_time_loss"] = dtl if dtl is not None else row["delta_time_loss"]
+
+            # Compuesto One-Hot
+            candidate_row["compound_SOFT"] = float(row["compound_ord"] == 1.0)
+            candidate_row["compound_MEDIUM"] = float(row["compound_ord"] == 2.0)
+            candidate_row["compound_HARD"] = float(row["compound_ord"] == 3.0)
 
             # --- Asignacion de la etiqueta de exito ---
             if w == NO_PIT:

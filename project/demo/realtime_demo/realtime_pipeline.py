@@ -43,7 +43,9 @@ class RealtimePipeline:
             "tyre_age", "compound_ord", "lap_vs_best_stint", "lap_mean_3", 
             "lap_std_3", "lap_slope_3", "deg_rate_3lap", "position", 
             "is_top10", "laps_remaining", "race_pct_complete", 
-            "gap_ahead", "gap_behind", "wait_laps", "predicted_cost_of_staying"
+            "gap_ahead", "gap_behind", "wait_laps", "predicted_cost_of_staying",
+            "pit_gap_ahead", "pit_gap_behind", "delta_time_loss",
+            "compound_SOFT", "compound_MEDIUM", "compound_HARD"
         ]
         
     def load_resources(self):
@@ -111,11 +113,22 @@ class RealtimePipeline:
         compound_map = {"SOFT": 1.0, "MEDIUM": 2.0, "HARD": 3.0}
         self.df_master["compound_ord"] = self.df_master["compound"].str.upper().map(compound_map).fillna(2.0)
         
+        # Add one-hot compounds
+        self.df_master["compound_SOFT"] = (self.df_master["compound_ord"] == 1.0).astype(float)
+        self.df_master["compound_MEDIUM"] = (self.df_master["compound_ord"] == 2.0).astype(float)
+        self.df_master["compound_HARD"] = (self.df_master["compound_ord"] == 3.0).astype(float)
+        
         # 2. Compute lap_vs_best_stint dynamically
         self.df_master["best_lap_in_stint"] = self.df_master.groupby(["driver_number", "stint_number"])["lap_duration"].transform(
             lambda x: x.cummin()
         )
         self.df_master["lap_vs_best_stint"] = self.df_master["lap_duration"] - self.df_master["best_lap_in_stint"]
+        
+        # Compute delta_time_loss
+        self.df_master = self.df_master.sort_values(["driver_number", "lap_number"])
+        self.df_master["delta_time_loss"] = self.df_master.groupby(["driver_number", "stint_number"])["lap_vs_best_stint"].transform(
+            lambda x: x.expanding().mean()
+        )
         
         # 3. Load and merge intervals data for gap_ahead and gap_behind
         raw_folder = RAW_DIR / f"{self.race_name}_2026"
@@ -163,6 +176,58 @@ class RealtimePipeline:
         self.df_master = self.df_master.sort_values(["lap_number", "position"])
         self.df_master["gap_behind"] = self.df_master.groupby("lap_number")["gap_ahead"].shift(-1).fillna(30.0)
         self.df_master = self.df_master.sort_values(["driver_number", "lap_number"])
+
+        # 3.1 Calcular huecos de tráfico tras parada (pit_gap_ahead_lap, pit_gap_behind_lap)
+        PIT_LOSS_DICT = {
+            "australia": 15.5,
+            "china": 39.0,
+            "japan": 32.8,
+            "united_states": 12.0,
+            "united_kingdom": 20.0,
+        }
+        pit_loss = PIT_LOSS_DICT.get(self.race_name, 20.0)
+
+        self.df_master["cum_duration"] = self.df_master.groupby("driver_number")["lap_duration"].cumsum()
+        self.df_master["is_pit_lap"] = (self.df_master["pit_duration"] > 0).astype(float)
+        
+        cum_lookup = self.df_master.set_index(["driver_number", "lap_number"])["cum_duration"].to_dict()
+        pit_lookup = self.df_master.set_index(["driver_number", "lap_number"])["is_pit_lap"].to_dict()
+        drivers_list = sorted(self.df_master["driver_number"].unique())
+
+        pit_gap_ahead_list = []
+        pit_gap_behind_list = []
+
+        for idx, row in self.df_master.iterrows():
+            drv = row["driver_number"]
+            lp = row["lap_number"]
+            cum = row["cum_duration"]
+            is_pit_real = pit_lookup.get((drv, lp), 0.0) == 1.0
+            
+            cum_post_pit = cum if is_pit_real else cum + pit_loss
+            
+            other_cums = []
+            for other_drv in drivers_list:
+                if other_drv != drv:
+                    other_cum = cum_lookup.get((other_drv, lp))
+                    if other_cum is not None:
+                        other_cums.append(other_cum)
+                        
+            if not other_cums:
+                pit_gap_ahead_list.append(30.0)
+                pit_gap_behind_list.append(30.0)
+                continue
+                
+            ahead_cums = [c for c in other_cums if c < cum_post_pit]
+            gap_a = cum_post_pit - max(ahead_cums) if ahead_cums else 30.0
+            
+            behind_cums = [c for c in other_cums if c > cum_post_pit]
+            gap_b = min(behind_cums) - cum_post_pit if behind_cums else 30.0
+            
+            pit_gap_ahead_list.append(gap_a)
+            pit_gap_behind_list.append(gap_b)
+
+        self.df_master["pit_gap_ahead_lap"] = pit_gap_ahead_list
+        self.df_master["pit_gap_behind_lap"] = pit_gap_behind_list
 
     def get_total_laps(self):
         """Returns the maximum lap number in the race dataset."""
@@ -213,6 +278,10 @@ class RealtimePipeline:
         candidates = []
         total_laps = self.get_total_laps()
         
+        # Lookups rápidos para el mapeo
+        pit_gaps_lookup = self.df_master.set_index(["driver_number", "lap_number"])[["pit_gap_ahead_lap", "pit_gap_behind_lap"]].to_dict("index")
+        delta_loss_lookup = self.df_master.set_index(["driver_number", "lap_number"])["delta_time_loss"].to_dict()
+
         for w in range(7):
             c_row = current_state.copy()
             c_row["wait_laps"] = w
@@ -225,6 +294,25 @@ class RealtimePipeline:
             c_row["race_pct_complete"] = lap / total_laps
             c_row["is_top10"] = 1 if int(current_state["position"]) <= 10 else 0
             c_row["predicted_cost_of_staying"] = 0.0
+            
+            # Map target lap features
+            target_lap = lap + w if w != 6 else lap
+            gaps = pit_gaps_lookup.get((self.driver_num, target_lap))
+            if gaps is not None:
+                c_row["pit_gap_ahead"] = gaps["pit_gap_ahead_lap"]
+                c_row["pit_gap_behind"] = gaps["pit_gap_behind_lap"]
+            else:
+                gaps_curr = pit_gaps_lookup.get((self.driver_num, lap), {"pit_gap_ahead_lap": 30.0, "pit_gap_behind_lap": 30.0})
+                c_row["pit_gap_ahead"] = gaps_curr["pit_gap_ahead_lap"]
+                c_row["pit_gap_behind"] = gaps_curr["pit_gap_behind_lap"]
+                
+            dtl = delta_loss_lookup.get((self.driver_num, target_lap))
+            c_row["delta_time_loss"] = dtl if dtl is not None else current_state["delta_time_loss"]
+            
+            c_row["compound_SOFT"] = float(current_state["compound_ord"] == 1.0)
+            c_row["compound_MEDIUM"] = float(current_state["compound_ord"] == 2.0)
+            c_row["compound_HARD"] = float(current_state["compound_ord"] == 3.0)
+            
             candidates.append(c_row)
             
         df_candidates = pd.DataFrame(candidates)
