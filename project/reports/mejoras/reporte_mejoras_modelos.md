@@ -1,60 +1,60 @@
-# Reporte de Mejoras y Cambios en los Modelos de Recomendación de Pit Stops
+# Pit Stop Recommender Models Improvement and Change Report
 
-Este reporte documenta los cambios técnicos realizados en la canalización de datos, la ingeniería de características y el entrenamiento de los modelos de regresión (Capa 1) y ranking (Capa 2) para resolver el sesgo sistemático de parada en boxes y mitigar el desbalance de clases extremo.
-
----
-
-## 1. Diagnóstico del Sesgo y Causa Raíz
-
-Antes de las modificaciones, el recomendador presentaba un sesgo crítico en el cual sugería entrar a boxes en casi cualquier vuelta de la carrera, fallando al predecir la vuelta óptima real.
-
-### Causa 1: El factor temporal del Stint
-El modelo utilizaba la vuelta total de carrera (`lap_number`) como variable lineal continua. Para un regresor o árbol de decisión, el número absoluto de vuelta no tiene significado físico de degradación a menos que se acople directamente al desgaste del neumático actual. El modelo aprendía sesgos espurios al ver paradas en vueltas arbitrarias, sin entender el ciclo de vida del neumático.
-
-### Causa 2: Desbalance de clases extremo (Regla 95/5)
-En una carrera típica de F1, el 95% de las vueltas son de permanencia en pista (`NO_PIT`) y solo el 5% contienen paradas reales. Al estructurar esto en un modelo point-wise con 7 candidatos por grupo (esperar 0..5 vueltas vs. NO_PIT), la clase positiva representa apenas el 11% de las filas, mientras que el resto se etiqueta con una penalización constante de `-2.0`. Sin un mecanismo de balanceo, los clasificadores optimizan su pérdida prediciendo siempre valores cercanos a `-2.0`, fallando en aprender los momentos de parada precisos.
+This report documents the technical changes made to the data pipeline, feature engineering, and training of the regression (Layer 1) and ranking (Layer 2) models to resolve the systematic pit stop bias and mitigate extreme class imbalance.
 
 ---
 
-## 2. Mejoras Específicas en el Modelo de Regresión (Capa 1)
+## 1. Bias Diagnosis and Root Cause
 
-El modelo de regresión de la **Capa 1** (un ensamble apilado de XGBRegressor + ExtraTreesRegressor con un meta-modelo Ridge) tiene la tarea de predecir el ritmo de carrera futuro (`predicted_future_pace`) si el piloto continúa en pista. Se implementaron tres mejoras clave para optimizar su precisión física:
+Before the modifications, the recommender presented a critical bias where it suggested entering boxes on almost any lap of the race, failing to predict the actual optimal lap.
 
-### A. Desacoplamiento No Lineal de Compuestos (One-Hot Compounds)
-- **Problema previo:** El modelo dependía de `compound_ord` (Soft = 1.0, Medium = 2.0, Hard = 3.0). Los modelos lineales (como la regresión Ridge final) asumían que la degradación escalaba linealmente con este orden.
-- **Solución:** Al separar los compuestos en variables binarias (`compound_SOFT`, `compound_MEDIUM`, `compound_HARD`), el modelo de regresión ahora aprende curvas de degradación y pérdidas de ritmo base totalmente independientes para cada tipo de compuesto. Esto es físicamente correcto, ya que el neumático Blando se degrada térmicamente mucho más rápido y de manera diferente al Duro.
+### Cause 1: The Temporal Factor of the Stint
+The model previously used the total race lap (`lap_number`) as a continuous linear variable. For a regressor or decision tree, the absolute lap number has no physical meaning of degradation unless it is coupled directly to the wear of the current tire. The model learned spurious biases by seeing pit stops on arbitrary laps, without understanding the life cycle of the tire.
 
-### B. Integral Térmica del Neumático (`delta_time_loss`)
-- **Problema previo:** El modelo proyectaba el ritmo futuro usando únicamente variables instantáneas como `tyre_age` y `lap_vs_best_stint`. Esto ignoraba el histórico de estrés del neumático en el stint actual (ej. si el piloto tuvo bloqueadas de frenos o vueltas muy lentas que sobrecalentaron el compuesto).
-- **Solución:** La media expansiva `delta_time_loss` actúa como una representación integral del desgaste acumulado en el stint. Permite al modelo de regresión diferenciar entre un neumático de 15 vueltas que ha rodado en aire limpio con degradación constante, y uno que ha sufrido tráfico pesado y picos térmicos.
-
-### C. Proyección de Tráfico Futuro (`pit_gap_ahead` / `pit_gap_behind`)
-- **Problema previo:** El regressor no sabía en qué condiciones de pista rodaría el piloto en la vuelta objetivo $L + w$.
-- **Solución:** Al incluir las proyecciones de tráfico de la ventana, el regresor puede ajustar su predicción de ritmo. Si la ventana proyecta tráfico denso (pequeño gap adelante), el regresor predice un ritmo más lento debido a la pérdida de carga aerodinámica (aire sucio) y la dificultad para adelantar, alineándose con la física de la F1.
-
-**Resultado en Regresión (Capa 1):**
-El $R^2$ score de entrenamiento del Stacking Regressor se incrementó de **0.9928 a 0.9939**, demostrando una mayor capacidad para capturar las dinámicas físicas y de tráfico de la pista.
+### Cause 2: Extreme Class Imbalance (95/5 Rule)
+In a typical F1 race, 95% of laps are staying out on track (`NO_PIT`) and only 5% contain real pit stops. When structuring this in a pointwise model with 7 candidates per group (waiting 0..5 laps vs. NO_PIT), the positive class represents barely 11% of the rows, while the rest are labeled with a constant penalty of `-2.0`. Without a balancing mechanism, classifiers optimize their loss by always predicting values close to `-2.0`, failing to learn the precise pit stop moments.
 
 ---
 
-## 3. Mejoras Específicas en el Modelo de Ranking (Capa 2)
+## 2. Specific Improvements in the Regression Model (Layer 1)
 
-El modelo de **Capa 2** (Point-wise Random Forest Regressor) toma las predicciones de costo de la Capa 1 y decide qué acción (wait_laps 0..5 o quedarse fuera 6) tiene mayor probabilidad de éxito estratégico.
+The regression model of **Layer 1** (a stacked ensemble of XGBRegressor + ExtraTreesRegressor with a Ridge meta-model) is tasked with predicting the future race pace (`predicted_future_pace`) if the driver continues on track. Three key improvements were implemented to optimize its physical accuracy:
 
-### A. Balanceo de Clases por Pesos (Sample Weights)
-Para mitigar el sesgo hacia `NO_PIT` (provocado por el desbalance 95/5), se calculó dinámicamente un peso de muestra de **~6.24x** para las instancias de la clase positiva (acciones que representan la parada óptima real). Esto evita que el Random Forest elija quedarse fuera por defecto para minimizar el error absoluto de clasificación.
+### A. Non-linear Decoupling of Compounds (One-Hot Compounds)
+* **Previous Problem:** The model relied on `compound_ord` (Soft = 1.0, Medium = 2.0, Hard = 3.0). Linear models (like the final Ridge regression) assumed that degradation scaled linearly with this order.
+* **Solution:** By separating the compounds into binary variables (`compound_SOFT`, `compound_MEDIUM`, `compound_HARD`), the regression model now learns curves of degradation and base pace loss that are completely independent for each compound type. This is physically correct, as Soft tires degrade thermally much faster and differently than Hards.
 
-### B. Corrección de la Etiqueta de Éxito
-Se eliminó la recompensa espuria por defecto para `wait_laps = 0` en vueltas normales, penalizando todas las opciones de parada incorrectas uniformemente con `-2.0` y asignando la etiqueta neutral `0.0` únicamente a la permanencia óptima (`NO_PIT`).
+### B. Tire Thermal Integral (`delta_time_loss`)
+* **Previous Problem:** The model projected future pace using only instantaneous variables such as `tyre_age` and `lap_vs_best_stint`. This ignored the historical stress of the tire in the current stint (e.g., lockups or very slow laps that overheated the compound).
+* **Solution:** The expansive mean `delta_time_loss` acts as an integral representation of accumulated wear in the stint. It allows the regression model to differentiate between a 15-lap tire that has run in clean air with constant degradation, and one that has suffered heavy traffic and thermal spikes.
+
+### C. Future Traffic Projection (`pit_gap_ahead` / `pit_gap_behind`)
+* **Previous Problem:** The regressor did not know what track conditions the driver would face at the target lap $L + w$.
+* **Solution:** By including projected traffic window gaps, the regressor can adjust its pace prediction. If the window projects dense traffic (small gap ahead), the regressor predicts a slower pace due to loss of aerodynamic downforce (dirty air) and difficulty overtaking, aligning with F1 physics.
+
+**Regression Results (Layer 1):**
+The training $R^2$ score of the Stacking Regressor increased from **0.9928 to 0.9939**, demonstrating a greater capacity to capture the physical and traffic dynamics of the track.
 
 ---
 
-## 4. Impacto en las Métricas de Evaluación
+## 3. Specific Improvements in the Ranking Model (Layer 2)
 
-| Métrica | Antes | Después | Impacto de las Mejoras |
+The **Layer 2** model (Point-wise Random Forest Regressor) takes the cost predictions from Layer 1 and decides which action (wait_laps 0..5 or staying out 6) has the highest probability of strategic success.
+
+### A. Class Balancing via Weights (Sample Weights)
+To mitigate the bias towards `NO_PIT` (caused by the 95/5 imbalance), a sample weight of **~6.24x** was dynamically calculated for instances of the positive class (actions representing the actual optimal pit stops). This prevents the Random Forest from choosing to stay out by default to minimize absolute classification error.
+
+### B. Success Label Correction
+Spurious default rewards for `wait_laps = 0` on normal laps were removed, penalizing all incorrect pit stop options uniformly with `-2.0` and assigning the neutral label `0.0` only to optimal stays (`NO_PIT`).
+
+---
+
+## 4. Impact on Evaluation Metrics
+
+| Metric | Before | After | Impact of Improvements |
 |---|:---:|:---:|:---:|
 | **NDCG@1 (Model Comparison CV)** | 89.74% | **92.17%** | **+2.43%** |
-| **Accuracy Global (Acción Exacta)** | 87.57% | **90.93%** | **+3.36%** (Supera el baseline `siempre NO_PIT`) |
-| **Accuracy de Decisión Binaria (Parar/No Parar)** | 89.07% | **91.47%** | **+2.40%** |
-| **Accuracy Binaria en Grupos con Parada** | 35.42% | **38.96%** | **+3.54%** |
-| **Accuracy Exacta en Grupos con Parada** | 21.80% | **34.06%** | **+12.26%** (Acierto crítico de la vuelta exacta) |
+| **Global Accuracy (Exact Action)** | 87.57% | **90.93%** | **+3.36%** (Beats the `always NO_PIT` baseline) |
+| **Binary Decision Accuracy (Pit/Stay Out)** | 89.07% | **91.47%** | **+2.40%** |
+| **Binary Accuracy on Pit Stop Groups** | 35.42% | **38.96%** | **+3.54%** |
+| **Exact Accuracy on Pit Stop Groups** | 21.80% | **34.06%** | **+12.26%** (Critical hit of the exact lap) |

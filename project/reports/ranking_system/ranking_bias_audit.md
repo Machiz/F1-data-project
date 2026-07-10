@@ -1,68 +1,58 @@
-# Auditoria de sesgo del ranking de pit stops (Capa 2)
+# Pit Stop Ranking Bias Audit (Layer 2)
 
-Grupos de decision evaluados (carrera, piloto, vuelta): **3331**
-Modelo: `models/ranking_layer2_model.pkl` (features: 21)
+Decision groups evaluated (race, driver, lap): **3331**
+Model: `models/ranking_layer2_model.pkl` (features: 21)
 Dataset: `data/processed/recommendation/pit_decision_candidates_v1.parquet`
-Acciones: `wait_laps` 0-5 (parar tras esperar w vueltas) + `wait_laps=6` (NO_PIT / STAY_OUT)
+Actions: `wait_laps` 0-5 (pit stop after waiting w laps) + `wait_laps=6` (NO_PIT / STAY_OUT)
 
-## Distribucion de la mejor accion real (ground truth)
+## Ground Truth Best Action Distribution
 
-| accion | wait_laps | n | % |
+| Action | wait_laps | n | % |
 |---|---|---|---|
-| Parar ahora (0) | 0 | 139 | 4.17% |
-| Esperar 1 | 1 | 61 | 1.83% |
-| Esperar 2 | 2 | 42 | 1.26% |
-| Esperar 3 | 3 | 42 | 1.26% |
-| Esperar 4 | 4 | 42 | 1.26% |
-| Esperar 5 | 5 | 41 | 1.23% |
+| Pit Now (0) | 0 | 139 | 4.17% |
+| Wait 1 | 1 | 61 | 1.83% |
+| Wait 2 | 2 | 42 | 1.26% |
+| Wait 3 | 3 | 42 | 1.26% |
+| Wait 4 | 4 | 42 | 1.26% |
+| Wait 5 | 5 | 41 | 1.23% |
 | NO_PIT | 6 | 2964 | 88.98% |
 
-## Distribucion de la mejor accion predicha
+## Predicted Best Action Distribution
 
-| accion | wait_laps | n | % |
+| Action | wait_laps | n | % |
 |---|---|---|---|
-| Parar ahora (0) | 0 | 36 | 1.08% |
-| Esperar 1 | 1 | 22 | 0.66% |
-| Esperar 2 | 2 | 26 | 0.78% |
-| Esperar 3 | 3 | 40 | 1.20% |
-| Esperar 4 | 4 | 32 | 0.96% |
-| Esperar 5 | 5 | 47 | 1.41% |
+| Pit Now (0) | 0 | 36 | 1.08% |
+| Wait 1 | 1 | 22 | 0.66% |
+| Wait 2 | 2 | 26 | 0.78% |
+| Wait 3 | 3 | 40 | 1.20% |
+| Wait 4 | 4 | 32 | 0.96% |
+| Wait 5 | 5 | 47 | 1.41% |
 | NO_PIT | 6 | 3128 | 93.91% |
 
-## Metricas
+## Metrics
 
-| Metrica | Valor |
+| Metric | Value |
 |---|---|
-| Accuracy global (accion exacta) | 0.9093 |
-| Baseline "siempre NO_PIT (6)" | 0.8898 |
-| Baseline "siempre parar ya (0)" (referencia historica) | 0.0417 |
-| Accuracy de decision binaria (parar vs no parar) | 0.9147 |
-| Grupos con parada optima real (optimo != 6) | 367 |
-| Accuracy binaria en esos grupos (detecta que hay que parar) | 0.3896 |
-| Accuracy exacta en esos grupos (offset correcto) | 0.3406 |
+| Global Accuracy (exact action) | 0.9093 |
+| Baseline "always NO_PIT (6)" | 0.8898 |
+| Baseline "always pit now (0)" (historical reference) | 0.0417 |
+| Binary Decision Accuracy (pit vs stay out) | 0.9147 |
+| Groups with real optimal stop (optimal != 6) | 367 |
+| Binary accuracy in those groups (detects a stop is needed) | 0.3896 |
+| Exact accuracy in those groups (correct offset) | 0.3406 |
 
-## Interpretacion
+## Interpretation
 
-La accuracy global (0.9093) supera al baseline trivial 'siempre NO_PIT' (0.8898) por 1.95 puntos porcentuales.
+The global accuracy (0.9093) beats the trivial baseline 'always NO_PIT' (0.8898) by 1.95 percentage points.
 
-En los 367 grupos donde la decision optima real fue una parada (offset 0-5), el modelo detecta correctamente la necesidad de parar (decision binaria parar/no parar) en el 38.96% de los casos y acierta el offset exacto en el 34.06%. La decision binaria es la metrica principal de utilidad del recomendador; el offset exacto es una exigencia mas estricta.
+In the 367 groups where the real optimal decision was a pit stop (offset 0-5), the model correctly detects the need to stop (binary decision pit/stay out) in 38.96% of the cases and matches the exact offset in 34.06%. The binary decision is the primary metric of recommender utility; the exact offset is a stricter requirement.
 
-Con NO_PIT como accion explicita, el candidato wait_laps=0 deja de recibir la mejor etiqueta por defecto en las vueltas sin ventana de parada real, de modo que 'quedarse fuera' se aprende como una decision propia y no como un artefacto del etiquetado.
+With NO_PIT as an explicit action, the `wait_laps=0` candidate no longer receives the best label by default in laps without a real stop window, so 'staying out' is learned as a distinct choice rather than an artifact of labeling.
 
-## Formulacion del target (corregida)
+## Target Formulation (Corrected)
 
-En `src/features/f1_recommender_pipeline.py`, cada grupo (carrera, piloto, vuelta)
-genera siete candidatos. Si hubo una parada real en `lap + w` para algun `w` en
-0-5, ese candidato recibe su `success_score`; el resto de offsets y NO_PIT reciben
-`-2.0`. Si no hubo parada real en la ventana de 5 vueltas, NO_PIT (`wait_laps=6`)
-recibe la etiqueta ganadora (`0.0`) y los offsets 0-5 reciben `-2.0`. Asi, el
-umbral neutro de `0.0` para NO_PIT hace que el modelo prefiera quedarse fuera
-antes que ejecutar una parada cuyo score esperado sea negativo.
+In `src/features/f1_recommender_pipeline.py`, each group (race, driver, lap) generates seven candidates. If there was a real stop in `lap + w` for any `w` in 0-5, that candidate receives its `success_score`; the rest of the offsets and NO_PIT receive `-2.0`. If there was no real stop in the 5-lap window, NO_PIT (`wait_laps=6`) receives the winning label (`0.0`) and offsets 0-5 receive `-2.0`. Thus, the neutral threshold of `0.0` for NO_PIT makes the model prefer staying out over executing a pit stop whose expected score is negative.
 
-## Limitaciones y trabajo futuro
+## Limitations and Future Work
 
-El ground truth se deriva del propio esquema de etiquetado; la accuracy exacta
-del offset esta acotada por la calidad del `success_score` proxy. La linea PPO
-modela nativamente la decision secuencial de parada (incluida la accion de
-quedarse fuera) evaluando la recompensa de la carrera simulada, y constituye la
-via de mayor rigor una vez entrenado el agente.
+The ground truth is derived from the labeling schema itself; the exact offset accuracy is bounded by the quality of the `success_score` proxy. The PPO line natively models the sequential pit stop decision (including the staying out action) by evaluating the reward of the simulated race, representing the most rigorous path once the agent is fully trained.
