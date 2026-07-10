@@ -87,7 +87,7 @@ def parse_inline_state(paragraph, text):
             if code:
                 run.font.name = 'Consolas'
                 run.font.size = Pt(9.5)
-                run.font.color.rgb = RGBColor(199, 37, 78) # #C7254E
+                run.font.color.rgb = RGBColor(64, 64, 64) # Monospace dark grey for code
                 
         current_text = ""
     
@@ -135,7 +135,7 @@ def add_custom_heading(doc, text, level):
         for run in h.runs:
             run.font.name = 'Calibri'
             run.font.size = Pt(22)
-            run.font.color.rgb = RGBColor(27, 54, 93) # #1B365D
+            run.font.color.rgb = RGBColor(51, 51, 51) # Charcoal
             run.bold = True
     elif level == 2:
         h_format.space_before = Pt(18)
@@ -144,7 +144,7 @@ def add_custom_heading(doc, text, level):
         for run in h.runs:
             run.font.name = 'Calibri'
             run.font.size = Pt(14)
-            run.font.color.rgb = RGBColor(27, 54, 93) # #1B365D
+            run.font.color.rgb = RGBColor(51, 51, 51) # Charcoal
             run.bold = True
     elif level == 3:
         h_format.space_before = Pt(12)
@@ -153,7 +153,7 @@ def add_custom_heading(doc, text, level):
         for run in h.runs:
             run.font.name = 'Calibri'
             run.font.size = Pt(12)
-            run.font.color.rgb = RGBColor(74, 85, 104) # #4A5568
+            run.font.color.rgb = RGBColor(102, 102, 102) # Medium grey
             run.bold = True
     return h
 
@@ -210,7 +210,7 @@ def build_docx(md_path, docx_path, figures_dir):
     normal_style = doc.styles['Normal']
     normal_style.font.name = 'Calibri'
     normal_style.font.size = Pt(11)
-    normal_style.font.color.rgb = RGBColor(45, 55, 72) # #2D3748
+    normal_style.font.color.rgb = RGBColor(51, 51, 51) # Soft black (#333333)
     
     # Read Markdown
     with open(md_path, 'r', encoding='utf-8') as f:
@@ -254,7 +254,7 @@ def build_docx(md_path, docx_path, figures_dir):
     title_run.font.name = 'Calibri'
     title_run.font.size = Pt(26)
     title_run.bold = True
-    title_run.font.color.rgb = RGBColor(27, 54, 93) # #1B365D
+    title_run.font.color.rgb = RGBColor(51, 51, 51) # Charcoal
     
     # Add Subtitles
     for s_line in subtitle_lines:
@@ -398,7 +398,7 @@ def build_docx(md_path, docx_path, figures_dir):
             run = cell_p.add_run(code_content.strip())
             run.font.name = 'Consolas'
             run.font.size = Pt(9)
-            run.font.color.rgb = RGBColor(74, 85, 104) # #4A5568
+            run.font.color.rgb = RGBColor(74, 85, 104) # Slate
             
             doc.add_paragraph().paragraph_format.space_after = Pt(6)
             continue
@@ -419,7 +419,7 @@ def build_docx(md_path, docx_path, figures_dir):
             tcBorders = parse_xml(f'''
                 <w:tcBorders {nsdecls("w")}>
                     <w:top w:val="none"/>
-                    <w:left w:val="single" w:sz="24" w:space="0" w:color="1B365D"/>
+                    <w:left w:val="single" w:sz="24" w:space="0" w:color="555555"/>
                     <w:bottom w:val="none"/>
                     <w:right w:val="none"/>
                 </w:tcBorders>
@@ -433,7 +433,7 @@ def build_docx(md_path, docx_path, figures_dir):
             run = cell_p.add_run(quote_text)
             run.italic = True
             run.font.size = Pt(10)
-            run.font.color.rgb = RGBColor(45, 55, 72) # #2D3748
+            run.font.color.rgb = RGBColor(74, 85, 104) # Slate
             
             doc.add_paragraph().paragraph_format.space_after = Pt(6)
             continue
@@ -477,7 +477,7 @@ def build_docx(md_path, docx_path, figures_dir):
             hdr_cells = tbl.rows[0].cells
             for col_idx, h_text in enumerate(headers):
                 cell = hdr_cells[col_idx]
-                set_cell_shading(cell, "1B365D")
+                set_cell_shading(cell, "333333") # Charcoal background
                 set_cell_borders(cell, color_hex="CBD5E0", sz="4")
                 p = cell.paragraphs[0]
                 p.alignment = WD_ALIGN_PARAGRAPH.LEFT

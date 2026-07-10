@@ -26,11 +26,11 @@
 7. [Clustering Analysis](#7-clustering-analysis)
 8. [Recommendation or Ranking System](#8-recommendation-or-ranking-system)
 9. [Graph Analytics](#9-graph-analytics)
-10. [Evaluation Protocol](#10-evaluation-protocol)
-11. [Pipeline and Reproducibility](#11-pipeline-and-reproducibility)
-12. [Ethics and Limitations](#12-ethics-and-limitations)
-13. [Final Conclusions](#13-final-conclusions)
-14. [Interactive Demo Systems](#14-interactive-demo-systems)
+10. [Interactive Demo Systems](#10-interactive-demo-systems)
+11. [Evaluation Protocol](#11-evaluation-protocol)
+12. [Pipeline and Reproducibility](#12-pipeline-and-reproducibility)
+13. [Ethics and Limitations](#13-ethics-and-limitations)
+14. [Final Conclusions](#14-final-conclusions)
 15. [Experimental: Reinforcement Learning Pit Strategy](#15-experimental-reinforcement-learning-pit-strategy)
 16. [References](#16-references)
 
@@ -385,7 +385,24 @@ The graph analytics results are sensitive to modeling and definition assumptions
 
 ---
 
-## 10. Evaluation Protocol
+## 10. Interactive Demo Systems
+
+This section documents the user-facing interface components designed to operationalize the F1 Strategic Decision Engine for strategy engineers on the pit wall.
+
+### 10.1 Real-Time Pit Wall Simulator
+Developed in `project/demo/realtime_demo/`, this application simulates live race strategy operations.
+*   **Multithreading Architecture**: Utilizes an Input Thread to capture non-blocking console commands (`Enter` to advance immediately, `space` to change speed multiplier, `p` to pause, `q` to quit) and a Simulation Thread to render the ASCII dashboard. Synchronization is handled via a `threading.Event` object (`next_lap_event`).
+*   **Cascade Inference**: In each lap $N$, the simulator partitions the historical data ($\mathcal{D}_{\text{history}} = \{ \text{laps}_t \mid t \le N \}$) to calculate dynamic rolling features (mean, std, and pace slope over the last 3 laps) and executes Layer 1 and Layer 2 models sequentially.
+*   **Zero-Lookahead Bias**: Since the pipeline only accesses past laps ($t \le N$), there is zero lookahead bias. The model cannot cheat by knowing future Safety Cars or weather transitions.
+
+### 10.2 Conversational Tactical Assistant (Strategy Chatbot)
+Implemented in `project/demo/` (featuring `chatbot_engine.py`, `template_generator.py`, and `cli_interface.py`), the Strategy Chatbot acts as a cognitive translation layer.
+*   **Workflow**: The user enters a command (e.g. `united_states VER 39`). The CLI resolves the acronym `VER` to car number `1` via `drivers.csv`, queries `pit_decision_candidates_v1.parquet` for the corresponding decision candidates, runs inference using the Layer 2 Random Forest Ranker, and feeds the outputs to the `template_generator.py`.
+*   **Natural Language Explanation**: The template generator checks the `predicted_cost_of_staying` bridge variable, PageRank centrality, and DRS Betweenness centrality to print a structured, ASCII-formatted strategic recommendation justifying *why* a pit stop should be executed or delayed.
+
+---
+
+## 11. Evaluation Protocol
 
 To ensure rigorous validation and prevent data leakage, the models are evaluated using a strict offline protocol designed around the F1 domain:
 
@@ -400,7 +417,7 @@ Rather than framing pit stops as a binary classification, each decision group (d
 
 ---
 
-## 11. Pipeline and Reproducibility
+## 12. Pipeline and Reproducibility
 
 The project follows a fully reproducible data-to-model pipeline:
 
@@ -429,7 +446,7 @@ To transition the F1 Strategic Decision Engine to a live production environment,
 
 ---
 
-## 12. Ethics and Limitations
+## 13. Ethics and Limitations
 
 ### Data Provenance and Fair Use
 The dataset relies on the public OpenF1 API. Since data is restricted to vehicle telemetry and official timing parameters, it contains no Personally Identifiable Information (PII) of team personnel or spectators, complying with GDPR.
@@ -443,7 +460,7 @@ To ensure compliance with hosting rules, the extraction pipeline (`extract_f1_da
 
 ---
 
-## 13. Final Conclusions
+## 14. Final Conclusions
 
 The F1 Strategic Decision Engine successfully demonstrates the viability of a unified data product for race strategy optimization:
 1.  **Methodological Rigor:** The dual-layer feature engineering (Capa A/B) successfully resolves the curse of dimensionality, raising the row-to-feature ratio to 123:1 for telemetry.
@@ -452,23 +469,6 @@ The F1 Strategic Decision Engine successfully demonstrates the viability of a un
 4.  **Graph Intelligence:** Opponent-centrality via PageRank provides a superior strategic rating for midfield battles compared to basic overtake counts.
 
 Future extensions will focus on incorporating real-time rival window telemetry (undercut/overcut exposure) and transitioning the ranker to a multi-agent reinforcement learning environment.
-
----
-
-## 14. Interactive Demo Systems
-
-This section documents the user-facing interface components designed to operationalize the F1 Strategic Decision Engine for strategy engineers on the pit wall.
-
-### 14.1 Real-Time Pit Wall Simulator
-Developed in `project/demo/realtime_demo/`, this application simulates live race strategy operations.
-*   **Multithreading Architecture**: Utilizes an Input Thread to capture non-blocking console commands (`Enter` to advance immediately, `space` to change speed multiplier, `p` to pause, `q` to quit) and a Simulation Thread to render the ASCII dashboard. Synchronization is handled via a `threading.Event` object (`next_lap_event`).
-*   **Cascade Inference**: In each lap $N$, the simulator partitions the historical data ($\mathcal{D}_{\text{history}} = \{ \text{laps}_t \mid t \le N \}$) to calculate dynamic rolling features (mean, std, and pace slope over the last 3 laps) and executes Layer 1 and Layer 2 models sequentially.
-*   **Zero-Lookahead Bias**: Since the pipeline only accesses past laps ($t \le N$), there is zero lookahead bias. The model cannot cheat by knowing future Safety Cars or weather transitions.
-
-### 14.2 Conversational Tactical Assistant (Strategy Chatbot)
-Implemented in `project/demo/` (featuring `chatbot_engine.py`, `template_generator.py`, and `cli_interface.py`), the Strategy Chatbot acts as a cognitive translation layer.
-*   **Workflow**: The user enters a command (e.g. `united_states VER 39`). The CLI resolves the acronym `VER` to car number `1` via `drivers.csv`, queries `pit_decision_candidates_v1.parquet` for the corresponding decision candidates, runs inference using the Layer 2 Random Forest Ranker, and feeds the outputs to the `template_generator.py`.
-*   **Natural Language Explanation**: The template generator checks the `predicted_cost_of_staying` bridge variable, PageRank centrality, and DRS Betweenness centrality to print a structured, ASCII-formatted strategic recommendation justifying *why* a pit stop should be executed or delayed.
 
 ---
 
